@@ -3,34 +3,20 @@ import 'package:provider/provider.dart';
 import 'models/AppInfo.dart';
 import 'models/User.dart';
 import 'pages/login_page.dart';
+import 'pages/exams_page.dart';
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final User _user = User();
-  final AppInfo _appInfo = AppInfo();
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildLoginStage(context);
-  }
-
-  Widget _buildLoginStage(BuildContext context) {
+    final User user = Provider.of<User>(context);
+    final AppInfo appInfo = Provider.of<AppInfo>(context);
+    
     return MaterialApp(
-      title: _appInfo.title,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MultiProvider(
-        providers: [
-          Provider<AppInfo>.value(value: _appInfo),
-          Provider<User>.value(value: _user),
-        ],
-        child: LoginPage()
-      )
-    );
+        title: appInfo.title,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: user.loginState == UserLoginState.success ? ExamsPage() : LoginPage()
+      );
   }
 }
