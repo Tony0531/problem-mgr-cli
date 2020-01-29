@@ -33,17 +33,26 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildMessageArea(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.all(10.0),
-        color: Colors.amber[600],
-        height: 48.0,
-        //transform: Matrix4.rotationZ(0.1),
-        child: Text("错题管理"));
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.fromLTRB(80, 20, 500, 700),
+          child: Text(
+            '错题管理',
+            style: TextStyle(fontSize: 100),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(80, 20, 500, 700),
+          
+        ),
+      ],
+    );
   }
 
   Widget _buildLoginArea(BuildContext context) {
     TextStyle titleFontStyle = TextStyle(
-      color: Color(0xFFFFFFFF),
+      color: Colors.white,
       fontSize: 24,
     );
     return AspectRatio(
@@ -104,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text(
                     '还没有账号？快去',
                     style: TextStyle(
-                      color: Color(0xFFFFFFFF),
+                      color: Colors.white,
                       fontSize: 15,
                     ),
                     textAlign: TextAlign.left,
@@ -122,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 Text(
                   '一个',
                   style: TextStyle(
-                    color: Color(0xFFFFFFFF),
+                    color: Colors.white,
                     fontSize: 15,
                   ),
                   textAlign: TextAlign.left,
