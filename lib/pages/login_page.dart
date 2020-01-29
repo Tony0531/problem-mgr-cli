@@ -56,50 +56,64 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 20, 430, 20),
+              padding: EdgeInsets.fromLTRB(20, 20, 420, 20),
               child: Text(
                 '账号',
                 textAlign: TextAlign.left,
                 style: titleFontStyle,
               ),
             ),
-            TextField(
-              obscureText: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '账号',
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 150, 0),
+              child: TextField(
+                obscureText: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: '账号',
+                ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 20, 430, 20),
+              padding: EdgeInsets.fromLTRB(20, 20, 420, 20),
               child: Text(
                 '密码',
                 textAlign: TextAlign.left,
                 style: titleFontStyle,
               ),
             ),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '密码',
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 150, 0),
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: '密码',
+                ),
               ),
             ),
-            RaisedButton(
-              child: const Text('登录'),
-              onPressed: _login,
+            Expanded(
+              child: RaisedButton(
+                child: const Text('登录'),
+                onPressed: _login,
+              ),
             ),
             Row(
               children: <Widget>[
-                Text(
-                  '还没有账号？快去',
-                  textAlign: TextAlign.left,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 20, 0, 20),
+                  child: Text(
+                    '还没有账号？快去',
+                    style: TextStyle(
+                      color: Color(0xFFFFFFFF),
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
                 ),
                 FlatButton(
                   child: Text('注册'),
                   onPressed: _gotoRegister,
-                  color: Colors.blue,
-                  textColor: Colors.white,
+                  textColor: Colors.blue,
                   disabledColor: Colors.grey,
                   disabledTextColor: Colors.black,
                   padding: EdgeInsets.all(8.0),
@@ -107,6 +121,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Text(
                   '一个',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontSize: 15,
+                  ),
                   textAlign: TextAlign.left,
                 ),
               ],
