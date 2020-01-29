@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/AppInfo.dart';
+import '../models/User.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -10,11 +10,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // final _userTF = TextEditingController();
+  // final _pwdTF = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("登录查看更多功能"),
+        title: const Text("登录查看更多功能"),
       ),
       body: Center(
         child: Row(
@@ -29,10 +32,29 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildMessageArea(BuildContext context) {
-    return Text("错题管理");
+    return Container(
+        margin: const EdgeInsets.all(10.0),
+        color: Colors.amber[600],
+        height: 48.0,
+        //transform: Matrix4.rotationZ(0.1),
+        child: Text("错题管理"));
   }
 
   Widget _buildLoginArea(BuildContext context) {
-    return Text("登录");
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text("账号"),
+        Text("密码"),
+        RaisedButton(
+          child: const Text("登录"),
+          onPressed: _login,
+        ),
+      ],
+    );
+  }
+
+  _login() {
+    Provider.of<User>(context).login("用户1", "密码1");
   }
 }
