@@ -32,7 +32,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildMessageArea(BuildContext context) {
-    return Text("错题管理");
+    return Container(
+        margin: const EdgeInsets.all(10.0),
+        color: Colors.amber[600],
+        height: 48.0,
+        //transform: Matrix4.rotationZ(0.1),
+        child: Text("错题管理"));
   }
 
   Widget _buildLoginArea(BuildContext context) {
