@@ -1,14 +1,10 @@
-import 'package:flutter/material.dart';
-
 enum UserLoginState {  
-  not_login,
+  notLogin,
   inprocess,
   success,
 }
  
-class User with ChangeNotifier {
-  UserLoginState state = UserLoginState.not_login;
-
+class User {
   // increment(){
   //   value++;
   //   notifyListeners();

@@ -116,13 +116,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.0"
-  provide:
+  provider:
     dependency: "direct main"
     description:
-      name: provide
+      name: provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.2"
+    version: "3.2.0"
   quiver:
     dependency: transitive
     description:
