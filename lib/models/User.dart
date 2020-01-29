@@ -19,4 +19,7 @@ class User with ChangeNotifier {
     print("login ${this._name}");
     this.notifyListeners();
   }
+
+  logout() {
+  }
 }

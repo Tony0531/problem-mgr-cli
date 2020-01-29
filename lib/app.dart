@@ -8,15 +8,21 @@ import 'pages/exams_page.dart';
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<User>(context);
-    final AppInfo appInfo = Provider.of<AppInfo>(context);
-    
+    final AppInfo appInfo = Provider.of<AppInfo>(context, listen: false);
+
     return MaterialApp(
         title: appInfo.title,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: user.loginState == UserLoginState.success ? ExamsPage() : LoginPage()
-      );
+        home: Selector(
+          builder: (BuildContext context, UserLoginState loginState, Widget child) {
+            return loginState == UserLoginState.success
+              ? ExamsPage()
+              : LoginPage();
+            },
+            selector: (BuildContext context, User user) => user.loginState,
+          ),
+        );
   }
 }
