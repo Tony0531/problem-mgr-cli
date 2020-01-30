@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Exam.dart';
+import 'ExamQuestion.dart';
+import 'QuestionRepo.dart';
 
 enum UserLoginState {
   notLogin,
@@ -20,18 +22,50 @@ class User with ChangeNotifier {
   Exam _currentExam;
   Exam get currentExam => _currentExam;
 
-  login(String name, String passwd) {
-    this._loginState = UserLoginState.success;
-    this._name = name;
+  void login(String name, String passwd) {
+    _loginState = UserLoginState.success;
+    _name = name;
+    _loadDebugExams();
+    _currentExam = _exams.last;
+
     print("login ${this._name}");
     this.notifyListeners();
   }
 
-  logout() {
+  void logout() {
     print("logout ${this._name}");
-    this._loginState = UserLoginState.notLogin;
-    this._name = null;
-    this._exams.clear();
-    this.notifyListeners();
+    _loginState = UserLoginState.notLogin;
+    _name = null;
+    _currentExam = null;
+    _exams.clear();
+
+    notifyListeners();
+  }
+
+  void setCurrentExam(Exam exam) {
+    assert(_exams.indexOf(exam) >= 0);
+    _currentExam = exam;
+    notifyListeners();
+  }
+
+  void _loadDebugExams() {
+    _currentExam = null;
+    _exams.clear();
+
+    final QuestionRepo repo = QuestionRepo.instance;
+
+    for (String examName in ["测试1", "测试2", "测试3"]) {
+      Exam exam = Exam(examName, ExamState.building);
+      _exams.add(exam);
+
+      for (String questionKey in ["q1", "q2", "q3"]) {
+        ExamQuestion question = ExamQuestion(
+          repo.getOrCreateQuestion(questionKey),
+          ExamQuestionResult.unknown,
+        );
+
+        exam.addQuestion(question);
+      }
+    }
   }
 }

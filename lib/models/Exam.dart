@@ -11,8 +11,15 @@ class Exam with ChangeNotifier {
   String _title;
   String get title => _title;
 
-  List<ExamQuestion> _questions;
+  ExamState _state;
+  ExamState get state => _state;
+
+  List<ExamQuestion> _questions = [];
   List<ExamQuestion> get questions => _questions;
+
+  static final Exam noExam = Exam("", ExamState.completed);
+
+  Exam(this._title, this._state);
 
   ExamQuestion findQuestion(String key) {
     for (ExamQuestion q in _questions) {
@@ -23,11 +30,12 @@ class Exam with ChangeNotifier {
     return null;
   }
 
-  addQuestion(ExamQuestion question) {
+  void addQuestion(ExamQuestion question) {
     if (findQuestion(question.question.key) != null) {
       return;
     }
 
     _questions.add(question);
+    notifyListeners();
   }
 }
