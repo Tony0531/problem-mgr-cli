@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   LoginPage({Key key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  // final _userTF = TextEditingController();
-  // final _pwdTF = TextEditingController();
+  final _userTF = TextEditingController();
+  final _pwdTF = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                         border: OutlineInputBorder(),
                         labelText: '账号',
                       ),
+                      controller: _userTF,
                     ),
                   ),
                 ),
@@ -117,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                         border: OutlineInputBorder(),
                         labelText: '密码',
                       ),
+                      controller: _pwdTF,
                     ),
                   ),
                 ),
@@ -134,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                       '登录',
                       style: TextStyle(fontSize: 40),
                     ),
-                    onPressed: _login,
+                    onPressed: () => _login(context),
                   ),
                 ),
               ],
@@ -178,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _gotoRegister() {}
-  _login() {
-    Provider.of<User>(context).login("用户1", "密码1");
+  _login(BuildContext context) {
+    Provider.of<User>(context).login(_userTF.text, _pwdTF.text);
   }
 }
