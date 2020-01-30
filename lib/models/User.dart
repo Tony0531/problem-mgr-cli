@@ -44,8 +44,10 @@ class User with ChangeNotifier {
 
   void setCurrentExam(Exam exam) {
     assert(_exams.indexOf(exam) >= 0);
-    _currentExam = exam;
-    notifyListeners();
+    if (_currentExam != exam) {
+      _currentExam = exam;
+      notifyListeners();
+    }
   }
 
   void _loadDebugExams() {

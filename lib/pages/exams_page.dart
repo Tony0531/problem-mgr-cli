@@ -14,9 +14,11 @@ class ExamsPage extends StatelessWidget {
       },
       builder: (BuildContext context, Exam exam, Widget child) {
         return ChangeNotifierProvider<Exam>.value(
-            value: exam, child: _buildScaffold(context));
+          value: exam,
+          child: child,
+        );
       },
-      //child: _buildScaffold(context),
+      child: _buildScaffold(context),
     );
   }
 
@@ -35,12 +37,14 @@ class ExamsPage extends StatelessWidget {
             width: 300,
             child: _buildExamSelector(context),
           ),
-          // Selector(
-          //   selector: (BuildContext context, User user) => user.name,
-          //   builder: (BuildContext context, String userName, Widget child) {
-          //     return Text(userName);
-          //   }
-          // ),
+          FlatButton(
+            onPressed: _createExam,
+            child: Text('生成试卷', style: Theme.of(context).primaryTextTheme.headline6),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: _buildUserInfo(context),
+          ),
         ],
       ),
       leading: IconButton(
@@ -59,23 +63,13 @@ class ExamsPage extends StatelessWidget {
   Widget _buildExamSelector(BuildContext context) {
     return PopupMenuButton<Exam>(
       itemBuilder: (BuildContext context) {
-        var items = <PopupMenuEntry<Exam>>[];
-
-        User user = Provider.of<User>(context, listen: false);
-
-        for (Exam exam in user.exams) {
-          items.add(PopupMenuItem<Exam>(
+        return List<PopupMenuEntry<Exam>>.from(
+            Provider.of<User>(context, listen: false).exams.map((Exam exam) {
+          return PopupMenuItem<Exam>(
             value: exam,
             child: Text(exam.title),
-          ));
-        }
-
-        items.add(PopupMenuItem<Exam>(
-          value: Exam.noExam,
-          child: Text('新建测试'),
-        ));
-
-        return items;
+          );
+        }));
       },
       onSelected: (Exam exam) {
         User user = Provider.of<User>(context, listen: false);
@@ -95,4 +89,15 @@ class ExamsPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildUserInfo(BuildContext context) {
+    return Selector(
+        selector: (BuildContext context, User user) => user.name,
+        builder: (BuildContext context, String userName, Widget child) {
+          return Text('$userName 欢迎您', textAlign: TextAlign.right);
+        },
+      );
+  }
+
+  void _createExam() {}
 }
