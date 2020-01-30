@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Card(
         clipBehavior: Clip.antiAlias,
         elevation: 20.0,
-        color: Colors.blue[900],
+        color: Theme.of(context).primaryColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -73,15 +73,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 150, 0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: '账号',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  child: SizedBox(
+                    width: 400,
+                    child: TextField(
+                      obscureText: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: '账号',
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -96,21 +104,40 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 150, 0),
-              child: TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: '密码',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 0, 30),
+                  child: SizedBox(
+                    width: 400,
+                    child: TextField(
+                      obscureText: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: '密码',
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-            Expanded(
-              child: RaisedButton(
-                child: const Text('登录'),
-                onPressed: _login,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: 350,
+                  height: 90,
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    child: const Text(
+                      '登录',
+                      style: TextStyle(fontSize: 40),
+                    ),
+                    onPressed: _login,
+                  ),
+                ),
+              ],
             ),
             Row(
               children: <Widget>[
@@ -128,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                 FlatButton(
                   child: Text('注册'),
                   onPressed: _gotoRegister,
-                  textColor: Colors.blue,
+                  textColor: Colors.white,
                   disabledColor: Colors.grey,
                   disabledTextColor: Colors.black,
                   padding: EdgeInsets.all(8.0),
