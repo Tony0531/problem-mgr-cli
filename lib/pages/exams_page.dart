@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/User.dart';
-import '../models/Exam.dart';
-import '../models/ExamQuestion.dart';
+import '../models/user.dart';
+import '../models/exam.dart';
+import '../models/exam_question.dart';
 
 class ExamsPage extends StatelessWidget {
   ExamsPage({Key key}) : super(key: key);
@@ -27,6 +27,7 @@ class ExamsPage extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildQuestionsArea(context),
+      bottomNavigationBar: _buildBottomBar(context),
     );
   }
 
@@ -56,8 +57,10 @@ class ExamsPage extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           onPressed: _createExam,
-          child:
-              Text('生成试卷', style: Theme.of(context).primaryTextTheme.headline6),
+          child: Text(
+            '新建试卷',
+            style: Theme.of(context).primaryTextTheme.headline6,
+          ),
         ),
         _buildUserInfo(context),
       ],
@@ -112,17 +115,18 @@ class ExamsPage extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: List<Widget>.from(questions.map((ExamQuestion question) {
-                return ChangeNotifierProvider<ExamQuestion>.value(
-                  value: question,
-                  child: Consumer<ExamQuestion>(
-                    builder: (BuildContext context, ExamQuestion question, Widget child) {
-                      return Card(
-                        margin: EdgeInsets.all(4.0),
-                        child: _buildQuestion(context, question),
-                      );
-                    },
-                  ),
-                );
+            return ChangeNotifierProvider<ExamQuestion>.value(
+              value: question,
+              child: Consumer<ExamQuestion>(
+                builder: (BuildContext context, ExamQuestion question,
+                    Widget child) {
+                  return Card(
+                    margin: EdgeInsets.all(4.0),
+                    child: _buildQuestion(context, question),
+                  );
+                },
+              ),
+            );
           })),
         );
       },
@@ -135,11 +139,49 @@ class ExamsPage extends StatelessWidget {
       children: <Widget>[
         ListTile(
           leading: Icon(Icons.album),
-          title: Text(question.question.title == null ? "N/A" : question.question.title),
+          title: Text(question.question.title == null
+              ? "N/A"
+              : question.question.title),
         ),
       ],
     );
   }
 
+  Widget _buildBottomBar(BuildContext context) {
+    return Selector(
+      selector: (BuildContext context, Exam exam) => exam.state,
+      builder: (BuildContext context, ExamState state, Widget child) {
+        switch (state) {
+          case ExamState.building:
+            break;
+          case ExamState.completed:
+            return null;
+          case ExamState.processing:
+            break;
+        }
+        return BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FlatButton(
+                onPressed: _commitExam,
+                child: Text('生成试卷'),
+              ),
+              FlatButton(
+                onPressed: _randomFillExam,
+                child: Text('随机题目'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _createExam() {}
+
+  void _commitExam() {}
+
+  void _randomFillExam() {
+  }
 }

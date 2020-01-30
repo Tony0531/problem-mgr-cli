@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'models/AppInfo.dart';
-import 'models/User.dart';
+import 'models/app_info.dart';
+import 'models/user.dart';
 import 'app.dart';
 
 void main() {
