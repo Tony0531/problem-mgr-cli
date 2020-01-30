@@ -36,15 +36,11 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.fromLTRB(80, 20, 500, 700),
+          padding: EdgeInsets.fromLTRB(80, 20, 500, 600),
           child: Text(
             '错题管理',
             style: TextStyle(fontSize: 100),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(80, 20, 500, 700),
-          
         ),
       ],
     );
@@ -64,13 +60,18 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 420, 20),
-              child: Text(
-                '账号',
-                textAlign: TextAlign.left,
-                style: titleFontStyle,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                  child: Text(
+                    '账号',
+                    textAlign: TextAlign.left,
+                    style: titleFontStyle,
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(20, 0, 150, 0),
