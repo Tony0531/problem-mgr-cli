@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart';
-import '../models/exam.dart';
-import '../models/exam_question.dart';
+import '../models/user_exam.dart';
+import '../models/user_exam_question.dart';
 
 class ExamsPage extends StatelessWidget {
   ExamsPage({Key key}) : super(key: key);
@@ -11,10 +11,10 @@ class ExamsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector(
       selector: (BuildContext context, User user) {
-        return user.currentExam == null ? Exam.noExam : user.currentExam;
+        return user.currentExam == null ? UserExam.noExam : user.currentExam;
       },
-      builder: (BuildContext context, Exam exam, Widget child) {
-        return ChangeNotifierProvider<Exam>.value(
+      builder: (BuildContext context, UserExam exam, Widget child) {
+        return ChangeNotifierProvider<UserExam>.value(
           value: exam,
           child: child,
         );
@@ -61,22 +61,22 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildExamSelector(BuildContext context) {
-    return PopupMenuButton<Exam>(
+    return PopupMenuButton<UserExam>(
       itemBuilder: (BuildContext context) {
-        return List<PopupMenuEntry<Exam>>.from(
-            Provider.of<User>(context, listen: false).exams.map((Exam exam) {
-          return PopupMenuItem<Exam>(
+        return List<PopupMenuEntry<UserExam>>.from(
+            Provider.of<User>(context, listen: false).exams.map((UserExam exam) {
+          return PopupMenuItem<UserExam>(
             value: exam,
             child: Text(exam.title),
           );
         }));
       },
-      onSelected: (Exam exam) {
+      onSelected: (UserExam exam) {
         User user = Provider.of<User>(context, listen: false);
         user.setCurrentExam(exam);
       },
       child: Selector(
-        selector: (BuildContext context, Exam exam) {
+        selector: (BuildContext context, UserExam exam) {
           return exam == null ? null : exam.title;
         },
         builder: (BuildContext context, String examName, Widget child) {
@@ -104,53 +104,88 @@ class ExamsPage extends StatelessWidget {
 
   Widget _buildQuestionsArea(BuildContext context) {
     return Selector(
-      selector: (BuildContext context, Exam exam) => exam.questions,
-      builder: (BuildContext context, List<ExamQuestion> questions, Widget child) {
+      selector: (BuildContext context, UserExam exam) => exam.questions,
+      builder:
+          (BuildContext context, List<UserExamQuestion> questions, Widget child) {
         print("exam.questionsArea build");
+
         return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: List<Widget>.from(questions.map((ExamQuestion question) {
-            return ChangeNotifierProvider<ExamQuestion>.value(
-              value: question,
-              child: Consumer<ExamQuestion>(
-                builder: (BuildContext context, ExamQuestion question,
-                    Widget child) {
-                  return Card(
-                    margin: EdgeInsets.all(4.0),
-                    child: _buildQuestion(context, question),
-                  );
-                },
-              ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: List<Widget>.from(questions.map((UserExamQuestion question) {
+              return ChangeNotifierProvider<UserExamQuestion>.value(
+                value: question,
+                child: _buildQuestionWrap(context, question),
+              );
+            })));
+      },
+    );
+  }
+
+  Widget _buildQuestionWrap(BuildContext context, UserExamQuestion question) {
+    return Selector(
+      selector: (BuildContext context, UserExam exam) => exam.state,
+      builder: (BuildContext context, UserExamState examState, Widget child) {
+        return Consumer<UserExamQuestion>(
+          builder: (BuildContext context, UserExamQuestion question, Widget child) {
+            return Card(
+              margin: EdgeInsets.all(4.0),
+              child: _buildQuestion(context, examState, question),
             );
-          })),
+          },
         );
       },
     );
   }
 
-  Widget _buildQuestion(BuildContext context, ExamQuestion question) {
+  Widget _buildQuestion(
+      BuildContext context, UserExamState examState, UserExamQuestion question) {
+    print("exam.question ${question.question.key} build");
+
+    Widget operations;
+
+    switch (examState) {
+      case UserExamState.building:
+        operations = IconButton(
+          icon: const Icon(Icons.remove),
+          onPressed: () => {},
+        );
+        break;
+      case UserExamState.processing:
+        operations = IconButton(
+          icon: const Icon(Icons.remove),
+          onPressed: () => {},
+        );
+        break;
+      case UserExamState.completed:
+        break;
+    }
+
+    ListTile title = ListTile(
+      leading: Icon(Icons.question_answer),
+      title: Text(question.question.title == null
+          ? question.question.key
+          : question.question.title),
+      trailing: operations,
+    );
+
+    List<Widget> contents = [];
+    contents.add(title);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: Icon(Icons.album),
-          title: Text(question.question.title == null
-              ? "N/A"
-              : question.question.title),
-        ),
-      ],
+      children: contents,
     );
   }
 
   Widget _buildBottomBar(BuildContext context) {
     return Selector(
-      selector: (BuildContext context, Exam exam) => exam.state,
-      builder: (BuildContext context, ExamState state, Widget child) {
+      selector: (BuildContext context, UserExam exam) => exam.state,
+      builder: (BuildContext context, UserExamState state, Widget child) {
         print("exam.bottomBar build");
         List<Widget> actions = [];
 
         switch (state) {
-          case ExamState.building:
+          case UserExamState.building:
             actions
               ..add(FlatButton(
                 onPressed: () => _commitExam(context),
@@ -161,14 +196,14 @@ class ExamsPage extends StatelessWidget {
                 child: Text('随机题目'),
               ));
             break;
-          case ExamState.completed:
+          case UserExamState.completed:
             actions
               ..add(FlatButton(
                 onPressed: () => _exportExam(context),
                 child: Text('下载试卷'),
               ));
             break;
-          case ExamState.processing:
+          case UserExamState.processing:
             actions
               ..add(FlatButton(
                 onPressed: () => _completeExam(context),
@@ -197,14 +232,14 @@ class ExamsPage extends StatelessWidget {
   }
 
   void _commitExam(BuildContext context) {
-    Exam exam = Provider.of<Exam>(context, listen: false);
+    UserExam exam = Provider.of<UserExam>(context, listen: false);
     exam.commit();
   }
 
   void _randomExam(BuildContext context) {}
 
   void _completeExam(BuildContext context) {
-    Exam exam = Provider.of<Exam>(context, listen: false);
+    UserExam exam = Provider.of<UserExam>(context, listen: false);
     exam.complete();
   }
 

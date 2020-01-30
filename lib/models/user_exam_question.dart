@@ -7,12 +7,12 @@ enum ExamQuestionResult {
   correct,
 }
 
-class ExamQuestion  with ChangeNotifier {
+class UserExamQuestion  with ChangeNotifier {
   final Question _question;
   Question get question => _question;
 
   ExamQuestionResult _result;
   ExamQuestionResult get result => _result;
   
-  ExamQuestion(this._question, this._result);
+  UserExamQuestion(this._question, this._result);
 }

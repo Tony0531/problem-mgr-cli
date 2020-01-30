@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'exam.dart';
-import 'exam_question.dart';
+import 'user_exam.dart';
+import 'user_exam_question.dart';
 import 'question_repo.dart';
 
 enum UserLoginState {
@@ -16,11 +16,11 @@ class User with ChangeNotifier {
   String _name;
   String get name => _name;
 
-  List<Exam> _exams = <Exam>[];
-  List<Exam> get exams => _exams;
+  List<UserExam> _exams = <UserExam>[];
+  List<UserExam> get exams => _exams;
 
-  Exam _currentExam;
-  Exam get currentExam => _currentExam;
+  UserExam _currentExam;
+  UserExam get currentExam => _currentExam;
 
   void login(String name, String passwd) {
     _loginState = UserLoginState.success;
@@ -42,7 +42,7 @@ class User with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentExam(Exam exam) {
+  void setCurrentExam(UserExam exam) {
     assert(_exams.indexOf(exam) >= 0);
     if (_currentExam != exam) {
       _currentExam = exam;
@@ -51,7 +51,7 @@ class User with ChangeNotifier {
   }
 
   void createExam(String examName) {
-    Exam exam = Exam(examName, ExamState.building);
+    UserExam exam = UserExam(examName, UserExamState.building);
     _exams.add(exam);
     _currentExam = exam;
     notifyListeners();
@@ -64,11 +64,11 @@ class User with ChangeNotifier {
     final QuestionRepo repo = QuestionRepo.instance;
 
     for (String examName in ["测试1", "测试2", "测试3"]) {
-      Exam exam = Exam(examName, ExamState.processing);
+      UserExam exam = UserExam(examName, UserExamState.processing);
       _exams.add(exam);
 
       for (String questionKey in ["q1", "q2", "q3"]) {
-        ExamQuestion question = ExamQuestion(
+        UserExamQuestion question = UserExamQuestion(
           repo.getOrCreateQuestion(questionKey),
           ExamQuestionResult.unknown,
         );
