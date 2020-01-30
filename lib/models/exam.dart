@@ -38,4 +38,24 @@ class Exam with ChangeNotifier {
     _questions.add(question);
     notifyListeners();
   }
+
+  void commit() {
+    if (_state != ExamState.building) {
+      return;
+    }
+
+    print("exam $_title commit");
+    _state = ExamState.processing;
+    notifyListeners();
+  }
+
+  void complete() {
+    if (_state != ExamState.processing) {
+      return;
+    }
+
+    print("exam $_title complete");
+    _state = ExamState.completed;
+    notifyListeners();
+  }
 }

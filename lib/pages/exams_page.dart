@@ -24,6 +24,7 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildScaffold(BuildContext context) {
+    print("exam full build");
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildQuestionsArea(context),
@@ -79,6 +80,7 @@ class ExamsPage extends StatelessWidget {
           return exam == null ? null : exam.title;
         },
         builder: (BuildContext context, String examName, Widget child) {
+          print("exam.selector build");
           return Text(examName);
         },
       ),
@@ -89,6 +91,7 @@ class ExamsPage extends StatelessWidget {
     return Selector(
       selector: (BuildContext context, User user) => user.name,
       builder: (BuildContext context, String userName, Widget child) {
+        print("exam.userInfo build");
         return Center(
           child: Text(
             '$userName 欢迎您',
@@ -102,8 +105,8 @@ class ExamsPage extends StatelessWidget {
   Widget _buildQuestionsArea(BuildContext context) {
     return Selector(
       selector: (BuildContext context, Exam exam) => exam.questions,
-      builder:
-          (BuildContext context, List<ExamQuestion> questions, Widget child) {
+      builder: (BuildContext context, List<ExamQuestion> questions, Widget child) {
+        print("exam.questionsArea build");
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: List<Widget>.from(questions.map((ExamQuestion question) {
@@ -143,6 +146,7 @@ class ExamsPage extends StatelessWidget {
     return Selector(
       selector: (BuildContext context, Exam exam) => exam.state,
       builder: (BuildContext context, ExamState state, Widget child) {
+        print("exam.bottomBar build");
         List<Widget> actions = [];
 
         switch (state) {
@@ -192,11 +196,17 @@ class ExamsPage extends StatelessWidget {
     user.createExam("测试+++");
   }
 
-  void _commitExam(BuildContext context) {}
+  void _commitExam(BuildContext context) {
+    Exam exam = Provider.of<Exam>(context, listen: false);
+    exam.commit();
+  }
 
   void _randomExam(BuildContext context) {}
 
-  void _completeExam(BuildContext context) {}
+  void _completeExam(BuildContext context) {
+    Exam exam = Provider.of<Exam>(context, listen: false);
+    exam.complete();
+  }
 
   void _exportExam(BuildContext context) {}
 }
