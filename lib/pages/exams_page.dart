@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/User.dart';
 import '../models/Exam.dart';
+import '../models/ExamQuestion.dart';
 
 class ExamsPage extends StatelessWidget {
   ExamsPage({Key key}) : super(key: key);
@@ -25,7 +26,7 @@ class ExamsPage extends StatelessWidget {
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Center(child: Text("错题管理")),
+      body: _buildQuestionsArea(context),
     );
   }
 
@@ -76,11 +77,7 @@ class ExamsPage extends StatelessWidget {
       },
       onSelected: (Exam exam) {
         User user = Provider.of<User>(context, listen: false);
-
-        if (exam == Exam.noExam) {
-        } else {
-          user.setCurrentExam(exam);
-        }
+        user.setCurrentExam(exam);
       },
       child: Selector(
         selector: (BuildContext context, Exam exam) {
@@ -104,6 +101,43 @@ class ExamsPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildQuestionsArea(BuildContext context) {
+    return Selector(
+      selector: (BuildContext context, Exam exam) => exam.questions,
+      builder:
+          (BuildContext context, List<ExamQuestion> questions, Widget child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: List<Widget>.from(questions.map((ExamQuestion question) {
+                return ChangeNotifierProvider<ExamQuestion>.value(
+                  value: question,
+                  child: Consumer<ExamQuestion>(
+                    builder: (BuildContext context, ExamQuestion question, Widget child) {
+                      return Card(
+                        margin: EdgeInsets.all(4.0),
+                        child: _buildQuestion(context, question),
+                      );
+                    },
+                  ),
+                );
+          })),
+        );
+      },
+    );
+  }
+
+  Widget _buildQuestion(BuildContext context, ExamQuestion question) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        ListTile(
+          leading: Icon(Icons.album),
+          title: Text(question.question.title == null ? "N/A" : question.question.title),
+        ),
+      ],
     );
   }
 
