@@ -44,19 +44,11 @@ class ExamsPage extends StatelessWidget {
             width: 300,
             child: _buildExamSelector(context),
           ),
-          // FlatButton(
-          //   onPressed: _createExam,
-          //   child: Text('生成试卷', style: Theme.of(context).primaryTextTheme.headline6),
-          // ),
-          // Align(
-          //   alignment: Alignment.centerLeft,
-          //   child: _buildUserInfo(context),
-          // ),
         ],
       ),
       actions: <Widget>[
         FlatButton(
-          onPressed: _createExam,
+          onPressed: () => _createExam(context),
           child: Text(
             '新建试卷',
             style: Theme.of(context).primaryTextTheme.headline6,
@@ -151,37 +143,60 @@ class ExamsPage extends StatelessWidget {
     return Selector(
       selector: (BuildContext context, Exam exam) => exam.state,
       builder: (BuildContext context, ExamState state, Widget child) {
+        List<Widget> actions = [];
+
         switch (state) {
           case ExamState.building:
+            actions
+              ..add(FlatButton(
+                onPressed: () => _commitExam(context),
+                child: Text('生成试卷'),
+              ))
+              ..add(FlatButton(
+                onPressed: () => _randomExam(context),
+                child: Text('随机题目'),
+              ));
             break;
           case ExamState.completed:
-            return null;
+            actions
+              ..add(FlatButton(
+                onPressed: () => _exportExam(context),
+                child: Text('下载试卷'),
+              ));
+            break;
           case ExamState.processing:
+            actions
+              ..add(FlatButton(
+                onPressed: () => _completeExam(context),
+                child: Text('提交答案'),
+              ))
+              ..add(FlatButton(
+                onPressed: () => _exportExam(context),
+                child: Text('下载试卷'),
+              ));
             break;
         }
+
         return BottomAppBar(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              FlatButton(
-                onPressed: _commitExam,
-                child: Text('生成试卷'),
-              ),
-              FlatButton(
-                onPressed: _randomFillExam,
-                child: Text('随机题目'),
-              ),
-            ],
+            children: actions,
           ),
         );
       },
     );
   }
 
-  void _createExam() {}
-
-  void _commitExam() {}
-
-  void _randomFillExam() {
+  void _createExam(BuildContext context) {
+    User user = Provider.of<User>(context, listen: false);
+    user.createExam("测试+++");
   }
+
+  void _commitExam(BuildContext context) {}
+
+  void _randomExam(BuildContext context) {}
+
+  void _completeExam(BuildContext context) {}
+
+  void _exportExam(BuildContext context) {}
 }

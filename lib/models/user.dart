@@ -50,6 +50,13 @@ class User with ChangeNotifier {
     }
   }
 
+  void createExam(String examName) {
+    Exam exam = Exam(examName, ExamState.building);
+    _exams.add(exam);
+    _currentExam = exam;
+    notifyListeners();
+  }
+
   void _loadDebugExams() {
     _currentExam = null;
     _exams.clear();
@@ -57,7 +64,7 @@ class User with ChangeNotifier {
     final QuestionRepo repo = QuestionRepo.instance;
 
     for (String examName in ["测试1", "测试2", "测试3"]) {
-      Exam exam = Exam(examName, ExamState.building);
+      Exam exam = Exam(examName, ExamState.processing);
       _exams.add(exam);
 
       for (String questionKey in ["q1", "q2", "q3"]) {
