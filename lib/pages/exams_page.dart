@@ -31,31 +31,34 @@ class ExamsPage extends StatelessWidget {
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+        tooltip: '登出',
+        icon: const Icon(Icons.exit_to_app),
+        onPressed: () => Provider.of<User>(context, listen: false).logout(),
+      ),
       title: Row(
         children: <Widget>[
           SizedBox(
             width: 300,
             child: _buildExamSelector(context),
           ),
-          FlatButton(
-            onPressed: _createExam,
-            child: Text('生成试卷', style: Theme.of(context).primaryTextTheme.headline6),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: _buildUserInfo(context),
-          ),
+          // FlatButton(
+          //   onPressed: _createExam,
+          //   child: Text('生成试卷', style: Theme.of(context).primaryTextTheme.headline6),
+          // ),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: _buildUserInfo(context),
+          // ),
         ],
       ),
-      leading: IconButton(
-        tooltip: '登出',
-        icon: const Icon(Icons.exit_to_app),
-        onPressed: () => Provider.of<User>(context, listen: false).logout(),
-      ),
       actions: <Widget>[
-        Text('1'),
-        Text('2'),
-        Text('3'),
+        FlatButton(
+          onPressed: _createExam,
+          child:
+              Text('生成试卷', style: Theme.of(context).primaryTextTheme.headline6),
+        ),
+        _buildUserInfo(context),
       ],
     );
   }
@@ -92,11 +95,16 @@ class ExamsPage extends StatelessWidget {
 
   Widget _buildUserInfo(BuildContext context) {
     return Selector(
-        selector: (BuildContext context, User user) => user.name,
-        builder: (BuildContext context, String userName, Widget child) {
-          return Text('$userName 欢迎您', textAlign: TextAlign.right);
-        },
-      );
+      selector: (BuildContext context, User user) => user.name,
+      builder: (BuildContext context, String userName, Widget child) {
+        return Center(
+          child: Text(
+            '$userName 欢迎您',
+            style: Theme.of(context).primaryTextTheme.headline6,
+          ),
+        );
+      },
+    );
   }
 
   void _createExam() {}
