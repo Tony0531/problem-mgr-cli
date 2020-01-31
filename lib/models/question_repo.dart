@@ -6,7 +6,7 @@ class QuestionRepo {
   List<String> get subjects => _subjects;
 
   Map<String, Exam> _exams = {};
-  List<Exam> get exams => _exams.values;
+  List<Exam> get exams => List.from(_exams.values);
 
   Map<String, Question> _questions = {};
 
@@ -41,6 +41,8 @@ class QuestionRepo {
     if (_subjects.indexOf(exam.subject) < 0) {
       _subjects.add(exam.subject);
     }
+
+    _exams[exam.title] = exam;
 
     for (String key in exam.questions) {
       Question question = Question(exam, key, QuestionLoadingState.notLoad);

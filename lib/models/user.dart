@@ -31,7 +31,7 @@ class User with ChangeNotifier {
     _exams.clear();
 
     _syncExams();
-    _currentExam = _exams.last;
+    _currentExam = _exams.isEmpty ? null : _exams.last;
 
     print("login ${this._name}");
     this.notifyListeners();
@@ -48,7 +48,7 @@ class User with ChangeNotifier {
   }
 
   UserExam findExam(String title) {
-    return _exams.firstWhere((exam) => exam.title == title);
+    return _exams.firstWhere((exam) => exam.title == title, orElse: () => null);
   }
 
   void setCurrentExam(UserExam exam) {
@@ -60,7 +60,8 @@ class User with ChangeNotifier {
   }
 
   void createExam(String examName) {
-    UserExam exam = UserExam(UserExamType.personal, examName, UserExamState.building);
+    UserExam exam =
+        UserExam(UserExamType.personal, examName, UserExamState.building);
     _exams.add(exam);
     _currentExam = exam;
     notifyListeners();
@@ -82,9 +83,10 @@ class User with ChangeNotifier {
       _exams.add(userExam);
 
       for (String questionKey in exam.questions) {
-        Question question = repo.findQuestion(Question.makeGlobalKey(exam.title, questionKey));
+        Question question =
+            repo.findQuestion(Question.makeGlobalKey(exam.title, questionKey));
         assert(question != null);
-        
+
         UserExamQuestion userQuestion = UserExamQuestion(
           question,
           ExamQuestionResult.unknown,
