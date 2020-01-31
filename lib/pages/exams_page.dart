@@ -207,14 +207,16 @@ class ExamsPage extends StatelessWidget {
     if (question.findInExam(exam.title) != null) {
       operations = IconButton(
         icon: const Icon(Icons.remove),
-        onPressed: () => {},
+        onPressed: () {
+          exam.removeQuestion(question.key);
+        },
       );
     }
     else {
       operations = IconButton(
         icon: const Icon(Icons.add_to_queue),
-        onPressed: () => {
-          //exam.add
+        onPressed: () {
+          exam.addQuestion(question, ExamQuestionResult.unknown);
         },
       );
     }

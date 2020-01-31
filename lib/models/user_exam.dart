@@ -52,6 +52,7 @@ class UserExam with ChangeNotifier {
       result,
     );
 
+    print("exam $title: + [${userQuestion.key}]");
     _questions.add(question);
     notifyListeners();
 
@@ -63,7 +64,7 @@ class UserExam with ChangeNotifier {
     if (idx > 0) {
       UserExamQuestion question = _questions.removeAt(idx);
       question.dispose();
-
+      print("exam $title: - [$key]");
       notifyListeners();
     }
   }
