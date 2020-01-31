@@ -1,41 +1,27 @@
-import 'package:flutter/material.dart';
-import 'exam_question.dart';
+class Exam {
+  final String title;
+  final String subject;
+  final List<String> questions;
 
-enum ExamState {
-  building,
-  processing,
-  completed,
-}
+  Exam(this.title, this.subject, this.questions);
 
-class Exam with ChangeNotifier {
-  String _title;
-  String get title => _title;
+  factory Exam.fromJson(Map<String, dynamic> json) {
+    String title = json['title'];
+    String subject = json['subject'];
+    List<String> questions = [];
 
-  ExamState _state;
-  ExamState get state => _state;
-
-  List<ExamQuestion> _questions = [];
-  List<ExamQuestion> get questions => _questions;
-
-  static final Exam noExam = Exam("", ExamState.completed);
-
-  Exam(this._title, this._state);
-
-  ExamQuestion findQuestion(String key) {
-    for (ExamQuestion q in _questions) {
-      if (q.question.key == key) {
-        return q;
+    dynamic jsonQuestions = json['questions'];
+    if (jsonQuestions is int) {
+      for (int i = 0; i < jsonQuestions; ++i) {
+        questions.add("${i + 1}");
       }
     }
-    return null;
-  }
-
-  void addQuestion(ExamQuestion question) {
-    if (findQuestion(question.question.key) != null) {
-      return;
+    else if (jsonQuestions is List) {
+      for (var key in jsonQuestions) {
+        questions.add("$key");
+      }
     }
 
-    _questions.add(question);
-    notifyListeners();
+    return Exam(title, subject, questions);
   }
 }
