@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart';
+import 'register_page.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key key}) : super(key: key);
@@ -151,7 +152,12 @@ class LoginPage extends StatelessWidget {
                 ),
                 FlatButton(
                   child: Text('注册'),
-                  onPressed: _gotoRegister,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterPage()));
+                  },
                   textColor: Colors.white,
                   disabledColor: Colors.grey,
                   disabledTextColor: Colors.black,
@@ -174,7 +180,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _gotoRegister() {}
   _login(BuildContext context) {
     Provider.of<User>(context).login(_userTF.text, _pwdTF.text);
   }
