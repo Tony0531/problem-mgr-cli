@@ -14,6 +14,10 @@ class UserQuestion with ChangeNotifier {
 
   UserQuestion(this._question);
 
+  UserExamQuestion findInExam(String examTitle) {
+    return _examQuestions.firstWhere((examQuestion) => examQuestion.exam.title == examTitle, orElse: () => null);
+  }
+  
   void addExamQuestion(UserExamQuestion examQuestion) {
   }
 

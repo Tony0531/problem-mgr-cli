@@ -114,6 +114,7 @@ class User with ChangeNotifier {
         assert(question != null);
 
         UserExamQuestion userQuestion = UserExamQuestion(
+          userExam,
           checkCreateQuestion(question),
           ExamQuestionResult.unknown,
         );

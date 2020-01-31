@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'user_exam.dart';
 import 'user_question.dart';
 
 enum ExamQuestionResult {
@@ -8,24 +9,25 @@ enum ExamQuestionResult {
 }
 
 class UserExamQuestion with ChangeNotifier {
-  final UserQuestion _question;
-  String get key => _question.key;
-  String get subject => _question.subject;
-  String get exam => _question.exam;
-  String get examKey => _question.examKey;
-
-  UserQuestion get question => _question;
+  final UserExam exam;
+  final UserQuestion question;
+  String get key => question.key;
+  String get subject => question.subject;
+  String get originExam => question.exam;
+  String get originExamKey => question.examKey;
 
   ExamQuestionResult _result;
   ExamQuestionResult get result => _result;
 
-  UserExamQuestion(this._question, this._result) : assert(_question != null) {
-    _question.addExamQuestion(this);
+  UserExamQuestion(this.exam, this.question, this._result)
+      : assert(exam != null),
+        assert(question != null) {
+    question.addExamQuestion(this);
   }
 
   @override
   void dispose() {
-    _question.removeExamQuestion(this);
+    question.removeExamQuestion(this);
     super.dispose();
   }
 }
