@@ -12,27 +12,26 @@ class ExamsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector(
-      selector: (BuildContext context, User user) {
+    return Selector<User, UserExam>(
+      selector: (_, user) {
         return user.currentExam == null ? UserExam.noExam : user.currentExam;
       },
-      builder: (BuildContext context, UserExam exam, Widget child) {
+      builder: (context, exam, _) {
+        print("build exam");
+
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider<UserExam>.value(value: exam),
-            ChangeNotifierProvider<ExamPageSelectionMode>(
-              create: (_) => ExamPageSelectionMode(),
-            ),
+            ChangeNotifierProvider.value(value: exam),
+            ChangeNotifierProvider.value(value: ExamPageSelectionMode()),
           ],
-          child: child,
+          child: _buildScaffold(context),
         );
       },
-      child: _buildScaffold(context),
     );
   }
 
   Widget _buildScaffold(BuildContext context) {
-    print("build exam");
+    print("build exam.scaffold");
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildQuestionsArea(context),
@@ -179,10 +178,22 @@ class ExamsPage extends StatelessWidget {
           ));
         }
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: childs,
+        return CustomScrollView(
+          shrinkWrap: true,
+          // 内容
+          slivers: <Widget>[
+            SliverPadding(
+              padding: const EdgeInsets.all(20.0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(childs),
+              ),
+            ),
+          ],
         );
+        // return CustomScrollView(
+        //   shrinkWrap: true,
+        //   slivers: childs,
+        // );
       },
     );
   }
@@ -300,72 +311,84 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildBottomBar(BuildContext context) {
-    return Selector(
-      selector: (BuildContext context, UserExam exam) => exam.state,
-      builder: (BuildContext context, UserExamState state, Widget child) {
+    return Selector<UserExam, UserExamState>(
+      selector: (_, exam) => exam.state,
+      builder: (context, state, _) {
         print("build exam.bottomBar");
-        List<Widget> actions = [];
 
-        switch (state) {
-          case UserExamState.building:
-            actions
-              ..add(Consumer<ExamPageSelectionMode>(
-                builder: (context, state, child) {
-                  if (state.isAddQueston) {
-                    return FlatButton(
+        if (state == UserExamState.building) {
+          return Consumer<ExamPageSelectionMode>(
+            builder: (context, state, child) {
+              if (state.isAddQueston) {
+                return _buildBottomAppBar(
+                  <Widget>[
+                    FlatButton(
                       onPressed: () {
                         Provider.of<ExamPageSelectionMode>(context)
                             .setAddQuestion(false);
                       },
                       child: Text('完成选择'),
-                    );
-                  } else {
-                    return FlatButton(
+                    ),
+                  ],
+                );
+              } else {
+                return _buildBottomAppBar(
+                  <Widget>[
+                    FlatButton(
                       onPressed: () {
                         Provider.of<ExamPageSelectionMode>(context)
                             .setAddQuestion(true);
                       },
                       child: Text('添加题目'),
-                    );
-                  }
-                },
-              ))
-              ..add(FlatButton(
-                onPressed: () => _commitExam(context),
-                child: Text('生成试卷'),
-              ))
-              ..add(FlatButton(
-                onPressed: () => _randomExam(context),
-                child: Text('随机题目'),
-              ));
-            break;
-          case UserExamState.completed:
-            actions
-              ..add(FlatButton(
+                    ),
+                    FlatButton(
+                      onPressed: () => _commitExam(context),
+                      child: Text('生成试卷'),
+                    ),
+                    FlatButton(
+                      onPressed: () => _randomExam(context),
+                      child: Text('随机题目'),
+                    ),
+                  ],
+                );
+              }
+            },
+          );
+        } else if (state == UserExamState.completed) {
+          return _buildBottomAppBar(
+            <Widget>[
+              FlatButton(
                 onPressed: () => _exportExam(context),
                 child: Text('下载试卷'),
-              ));
-            break;
-          case UserExamState.processing:
-            actions
-              ..add(FlatButton(
+              ),
+            ],
+          );
+        } else {
+          assert(state == UserExamState.processing);
+
+          return _buildBottomAppBar(
+            <Widget>[
+              FlatButton(
                 onPressed: () => _completeExam(context),
                 child: Text('提交答案'),
-              ))
-              ..add(FlatButton(
+              ),
+              FlatButton(
                 onPressed: () => _exportExam(context),
                 child: Text('下载试卷'),
-              ));
-            break;
+              ),
+            ],
+          );
         }
-
-        return BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: actions,
-          ),
-        );
       },
+    );
+  }
+
+  Widget _buildBottomAppBar(List<Widget> childs) {
+    return BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: childs,
+      ),
     );
   }
 
