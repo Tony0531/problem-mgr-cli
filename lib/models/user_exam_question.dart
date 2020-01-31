@@ -22,12 +22,5 @@ class UserExamQuestion with ChangeNotifier {
   UserExamQuestion(this.exam, this.question, this._result)
       : assert(exam != null),
         assert(question != null) {
-    question.addExamQuestion(this);
-  }
-
-  @override
-  void dispose() {
-    question.removeExamQuestion(this);
-    super.dispose();
   }
 }

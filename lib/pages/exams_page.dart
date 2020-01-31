@@ -203,29 +203,25 @@ class ExamsPage extends StatelessWidget {
 
     UserExam exam = Provider.of<UserExam>(context, listen: false);
 
-    Widget operations = Selector<UserQuestion, bool>(
-      selector: (_, question) {
-        return question.findInExam(exam.title) != null;
-      },
-      builder: (context, inExam, _) {
-        if (inExam) {
-          return IconButton(
-            icon: const Icon(Icons.remove),
-            onPressed: () {
-              exam.removeQuestion(question.key);
-            },
-          );
-        } else {
-          return IconButton(
-            icon: const Icon(Icons.add_to_queue),
-            onPressed: () {
-              exam.addQuestion(question, ExamQuestionResult.unknown);
-            },
-          );
-        }
-
+    Widget operations = Selector<UserQuestion, bool>(selector: (_, question) {
+      return question.findInExam(exam.title) != null;
+    }, builder: (context, inExam, _) {
+      if (inExam) {
+        return IconButton(
+          icon: const Icon(Icons.remove),
+          onPressed: () {
+            exam.removeQuestion(question.key);
+          },
+        );
+      } else {
+        return IconButton(
+          icon: const Icon(Icons.add_to_queue),
+          onPressed: () {
+            exam.addQuestion(question, ExamQuestionResult.unknown);
+          },
+        );
       }
-    );
+    });
 
     ListTile title = ListTile(
       leading: Icon(Icons.question_answer),
@@ -243,20 +239,28 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildQuestionsAreaView(BuildContext context) {
-    return Selector<UserExam, List<UserExamQuestion>>(
-      selector: (_, exam) => exam.questions,
-      builder: (context, questions, child) {
-        print("build exam.questionsArea");
+    return Selector<UserExam, int>(
+      selector: (_, exam) => exam.questionsVersion,
+      builder: (context, _, child) {
+        UserExam exam = Provider.of<UserExam>(context, listen: false);
+
+        print("build exam.questionsArea, count=${exam.questions.length}");
+        
+        var childs = <Widget>[];
+
+        for (var question in exam.questions) {
+          childs.add(
+            ChangeNotifierProvider<UserExamQuestion>.value(
+              value: question,
+              child: _buildExamQuestionWrap(context, question),
+            ),
+          );
+        }
 
         return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children:
-                List<Widget>.from(questions.map((UserExamQuestion question) {
-              return ChangeNotifierProvider<UserExamQuestion>.value(
-                value: question,
-                child: _buildExamQuestionWrap(context, question),
-              );
-            })));
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: childs,
+        );
       },
     );
   }
@@ -289,13 +293,16 @@ class ExamsPage extends StatelessWidget {
       case UserExamState.building:
         operations = IconButton(
           icon: const Icon(Icons.remove),
-          onPressed: () => {},
+          onPressed: () {
+            UserExam exam = Provider.of<UserExam>(context, listen: false);
+            exam.removeQuestion(question.key);
+          },
         );
         break;
       case UserExamState.processing:
         operations = IconButton(
           icon: const Icon(Icons.remove),
-          onPressed: () => {},
+          onPressed: () {},
         );
         break;
       case UserExamState.completed:

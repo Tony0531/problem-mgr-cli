@@ -24,6 +24,8 @@ class UserExam with ChangeNotifier {
 
   List<UserExamQuestion> _questions = [];
   List<UserExamQuestion> get questions => _questions;
+  int _questionsVersion = 0;
+  int get questionsVersion => _questionsVersion;
 
   static final UserExam noExam =
       UserExam(UserExamType.personal, "", "", UserExamState.completed);
@@ -51,9 +53,11 @@ class UserExam with ChangeNotifier {
       userQuestion,
       result,
     );
+    userQuestion.addExamQuestion(question);
 
     print("exam $title: + [${userQuestion.key}]");
     _questions.add(question);
+    _questionsVersion++;
     notifyListeners();
 
     return question;
@@ -63,9 +67,12 @@ class UserExam with ChangeNotifier {
     int idx = _questions.indexWhere((question) => question.key == key);
     if (idx >= 0) {
       UserExamQuestion question = _questions.removeAt(idx);
-      question.dispose();
+      question.question.removeExamQuestion(question);
       print("exam $title: - [$key]");
+      _questionsVersion++;
       notifyListeners();
+    } else {
+      print("exam $title: - [$key] !!!");
     }
   }
 
@@ -89,10 +96,10 @@ class UserExam with ChangeNotifier {
     notifyListeners();
   }
 
-  @override
-  void dispose() {
-    _questions.forEach((question) => question.dispose());
+  void clear() {
+    _questions.forEach(
+      (question) => question.question.removeExamQuestion(question),
+    );
     _questions.clear();
-    super.dispose();
   }
 }

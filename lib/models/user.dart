@@ -46,10 +46,9 @@ class User with ChangeNotifier {
     _name = null;
     _currentExam = null;
 
-    _exams.forEach((exam) => exam.dispose());
+    _exams.forEach((exam) => exam.clear());
     _exams.clear();
 
-    _questions.forEach((_, question) => question.dispose());
     _questions.clear();
 
     notifyListeners();
