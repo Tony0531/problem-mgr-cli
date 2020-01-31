@@ -24,7 +24,7 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildScaffold(BuildContext context) {
-    print("exam full build");
+    print("build exam");
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildQuestionsArea(context),
@@ -80,7 +80,7 @@ class ExamsPage extends StatelessWidget {
           return exam == null ? null : exam.title;
         },
         builder: (BuildContext context, String examName, Widget child) {
-          print("exam.selector build");
+          print("build exam.selector");
           return Text(examName);
         },
       ),
@@ -91,7 +91,7 @@ class ExamsPage extends StatelessWidget {
     return Selector(
       selector: (BuildContext context, User user) => user.name,
       builder: (BuildContext context, String userName, Widget child) {
-        print("exam.userInfo build");
+        print("build exam.userInfo");
         return Center(
           child: Text(
             '$userName 欢迎您',
@@ -107,7 +107,7 @@ class ExamsPage extends StatelessWidget {
       selector: (BuildContext context, UserExam exam) => exam.questions,
       builder:
           (BuildContext context, List<UserExamQuestion> questions, Widget child) {
-        print("exam.questionsArea build");
+        print("build exam.questionsArea");
 
         return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -139,7 +139,7 @@ class ExamsPage extends StatelessWidget {
 
   Widget _buildQuestion(
       BuildContext context, UserExamState examState, UserExamQuestion question) {
-    print("exam.question ${question.question.key} build");
+    print("build exam.question ${question.question.key}");
 
     Widget operations;
 
@@ -179,7 +179,7 @@ class ExamsPage extends StatelessWidget {
     return Selector(
       selector: (BuildContext context, UserExam exam) => exam.state,
       builder: (BuildContext context, UserExamState state, Widget child) {
-        print("exam.bottomBar build");
+        print("build exam.bottomBar");
         List<Widget> actions = [];
 
         switch (state) {

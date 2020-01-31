@@ -14,7 +14,7 @@ void main() {
   final QuestionRepo repo = QuestionRepo.instance;
   repo.addExam(
     Exam.fromJson(
-      json.decode('{"subject":"语文", "title":"测试1", "question": 20}'),
+      json.decode('{"subject":"语文", "title":"测试1", "questions": 20}'),
     ),
   );
 

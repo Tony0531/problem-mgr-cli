@@ -13,8 +13,12 @@ class Exam {
     dynamic jsonQuestions = json['questions'];
     if (jsonQuestions is int) {
       for (int i = 0; i < jsonQuestions; ++i) {
-        print("${i + 1}");
         questions.add("${i + 1}");
+      }
+    }
+    else if (jsonQuestions is List) {
+      for (var key in jsonQuestions) {
+        questions.add("$key");
       }
     }
 

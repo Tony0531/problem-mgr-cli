@@ -55,6 +55,7 @@ class User with ChangeNotifier {
     assert(_exams.indexOf(exam) >= 0);
     if (_currentExam != exam) {
       _currentExam = exam;
+      print("exam switch ${_currentExam == null ? 'N/A' : exam.title}");
       notifyListeners();
     }
   }
@@ -64,6 +65,7 @@ class User with ChangeNotifier {
         UserExam(UserExamType.personal, examName, UserExamState.building);
     _exams.add(exam);
     _currentExam = exam;
+    print("exam create $examName");
     notifyListeners();
   }
 
