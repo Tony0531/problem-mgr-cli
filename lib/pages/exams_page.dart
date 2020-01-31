@@ -15,8 +15,13 @@ class ExamsPage extends StatelessWidget {
         return user.currentExam == null ? UserExam.noExam : user.currentExam;
       },
       builder: (BuildContext context, UserExam exam, Widget child) {
-        return ChangeNotifierProvider<UserExam>.value(
-          value: exam,
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider<UserExam>.value(value: exam),
+            ChangeNotifierProvider<ExamPageSelectionMode>.value(
+              value: ExamPageSelectionMode(),
+            ),
+          ],
           child: child,
         );
       },
@@ -106,6 +111,31 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildQuestionsArea(BuildContext context) {
+    return Selector<UserExam, UserExamState>(
+      selector: (context, exam) => exam.state,
+      builder: (context, state, child) {
+        if (state == UserExamState.building) {
+          return Consumer<ExamPageSelectionMode>(
+            builder: (context, selectionMode, child) {
+              if (selectionMode.isAddQueston) {
+                return _buildQuestionsAreaAdd(context);
+              } else {
+                return _buildQuestionsAreaView(context);
+              }
+            },
+          );
+        } else {
+          return _buildQuestionsAreaView(context);
+        }
+      },
+    );
+  }
+
+  Widget _buildQuestionsAreaAdd(BuildContext context) {
+    return Text("问题选择");
+  }
+
+  Widget _buildQuestionsAreaView(BuildContext context) {
     return Selector(
       selector: (BuildContext context, UserExam exam) => exam.questions,
       builder: (BuildContext context, List<UserExamQuestion> questions,
@@ -190,6 +220,27 @@ class ExamsPage extends StatelessWidget {
         switch (state) {
           case UserExamState.building:
             actions
+              ..add(Consumer<ExamPageSelectionMode>(
+                builder: (context, state, child) {
+                  if (state.isAddQueston) {
+                    return FlatButton(
+                      onPressed: () {
+                        Provider.of<ExamPageSelectionMode>(context)
+                            .setAddQuestion(false);
+                      },
+                      child: Text('完成选择'),
+                    );
+                  } else {
+                    return FlatButton(
+                      onPressed: () {
+                        Provider.of<ExamPageSelectionMode>(context)
+                            .setAddQuestion(true);
+                      },
+                      child: Text('添加题目'),
+                    );
+                  }
+                },
+              ))
               ..add(FlatButton(
                 onPressed: () => _commitExam(context),
                 child: Text('生成试卷'),
@@ -274,4 +325,16 @@ class ExamsPage extends StatelessWidget {
   }
 
   void _exportExam(BuildContext context) {}
+}
+
+class ExamPageSelectionMode with ChangeNotifier {
+  bool _isAddQuestion = false;
+  bool get isAddQueston => _isAddQuestion;
+
+  void setAddQuestion(bool isAddQueston) {
+    if (_isAddQuestion != isAddQueston) {
+      _isAddQuestion = isAddQueston;
+      notifyListeners();
+    }
+  }
 }
