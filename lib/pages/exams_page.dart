@@ -244,8 +244,8 @@ class ExamsPage extends StatelessWidget {
       builder: (context, _, child) {
         UserExam exam = Provider.of<UserExam>(context, listen: false);
 
-        print("build exam.questionsArea, count=${exam.questions.length}");
-        
+        print("build exam.questionsArea");
+
         var childs = <Widget>[];
 
         for (var question in exam.questions) {
@@ -300,10 +300,7 @@ class ExamsPage extends StatelessWidget {
         );
         break;
       case UserExamState.processing:
-        operations = IconButton(
-          icon: const Icon(Icons.remove),
-          onPressed: () {},
-        );
+        operations = _buildExamQuestionResult(context, question);
         break;
       case UserExamState.completed:
         break;
@@ -322,6 +319,28 @@ class ExamsPage extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: contents,
     );
+  }
+
+  Widget _buildExamQuestionResult(
+    BuildContext context, UserExamQuestion question) {
+    return Radio(
+            value: ExamQuestionResult.correct,
+            groupValue: question.result,
+            onChanged: (ExamQuestionResult value) => question.setResult(value),
+        );
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.end,
+    //   children: <Widget>[
+    //     ListTile(
+    //       title: const Text('对'),
+    //       leading: Radio(
+    //         value: ExamQuestionResult.correct,
+    //         groupValue: question.result,
+    //         onChanged: (ExamQuestionResult value) => question.setResult(value),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 
   Widget _buildBottomBar(BuildContext context) {

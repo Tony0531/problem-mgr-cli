@@ -18,9 +18,14 @@ class UserExamQuestion with ChangeNotifier {
 
   ExamQuestionResult _result;
   ExamQuestionResult get result => _result;
+  void setResult(ExamQuestionResult result) {
+    if (_result != result) {
+      _result = result;
+      notifyListeners();
+    }
+  }
 
   UserExamQuestion(this.exam, this.question, this._result)
       : assert(exam != null),
-        assert(question != null) {
-  }
+        assert(question != null);
 }
