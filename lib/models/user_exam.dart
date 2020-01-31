@@ -74,4 +74,11 @@ class UserExam with ChangeNotifier {
     _state = UserExamState.completed;
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    _questions.forEach((question) => question.dispose());
+    _questions.clear();
+    super.dispose();
+  }
 }

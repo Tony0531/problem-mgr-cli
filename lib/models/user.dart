@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'user_exam.dart';
+import 'user_question.dart';
 import 'user_exam_question.dart';
 import 'exam.dart';
 import 'question.dart';
@@ -18,8 +19,10 @@ class User with ChangeNotifier {
   String _name;
   String get name => _name;
 
-  List<UserExam> _exams = <UserExam>[];
+  List<UserExam> _exams = [];
   List<UserExam> get exams => _exams;
+
+  Map<String, UserQuestion> _questions = {};
 
   UserExam _currentExam;
   UserExam get currentExam => _currentExam;
@@ -42,9 +45,29 @@ class User with ChangeNotifier {
     _loginState = UserLoginState.notLogin;
     _name = null;
     _currentExam = null;
+
+    _exams.forEach((exam) => exam.dispose());
     _exams.clear();
 
+    _questions.forEach((_, question) => question.dispose());
+    _questions.clear();
+
     notifyListeners();
+  }
+
+  UserQuestion findQuestion(String questionKey) {
+    return _questions[questionKey];
+  }
+
+  UserQuestion checkCreateQuestion(Question question) {
+    UserQuestion userQuestion = _questions[question.key];
+
+    if (userQuestion == null) {
+      userQuestion = UserQuestion(question);
+      _questions[question.key] = userQuestion;
+    }
+
+    return userQuestion;
   }
 
   UserExam findExam(String title) {
@@ -61,8 +84,8 @@ class User with ChangeNotifier {
   }
 
   void createExam(String subject, String examName) {
-    UserExam exam =
-        UserExam(UserExamType.personal, subject, examName, UserExamState.building);
+    UserExam exam = UserExam(
+        UserExamType.personal, subject, examName, UserExamState.building);
     _exams.add(exam);
     _currentExam = exam;
     print("exam create $examName");
@@ -91,7 +114,7 @@ class User with ChangeNotifier {
         assert(question != null);
 
         UserExamQuestion userQuestion = UserExamQuestion(
-          question,
+          checkCreateQuestion(question),
           ExamQuestionResult.unknown,
         );
 
