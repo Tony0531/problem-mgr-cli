@@ -113,13 +113,7 @@ class User with ChangeNotifier {
             repo.findQuestion(Question.makeGlobalKey(exam.title, questionKey));
         assert(question != null);
 
-        UserExamQuestion userQuestion = UserExamQuestion(
-          userExam,
-          checkCreateQuestion(question),
-          ExamQuestionResult.unknown,
-        );
-
-        userExam.addQuestion(userQuestion);
+        userExam.addQuestion(checkCreateQuestion(question), ExamQuestionResult.unknown);
       }
     }
   }

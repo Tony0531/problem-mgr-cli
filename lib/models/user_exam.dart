@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'user_question.dart';
 import 'user_exam_question.dart';
 
 enum UserExamState {
@@ -38,19 +39,31 @@ class UserExam with ChangeNotifier {
     return null;
   }
 
-  void addQuestion(UserExamQuestion question) {
-    if (findQuestion(question.question.key) != null) {
-      return;
+  UserExamQuestion addQuestion(
+      UserQuestion userQuestion, ExamQuestionResult result) {
+    UserExamQuestion question = findQuestion(userQuestion.key);
+    if (question != null) {
+      return question;
     }
+
+    question = UserExamQuestion(
+      this,
+      userQuestion,
+      result,
+    );
 
     _questions.add(question);
     notifyListeners();
+
+    return question;
   }
 
   void removeQuestion(String key) {
-    var oldLength = _questions.length;
-    _questions.removeWhere((question) => question.question.key == key);
-    if (oldLength != _questions.length) {
+    int idx = _questions.indexWhere((question) => question.key == key);
+    if (idx > 0) {
+      UserExamQuestion question = _questions.removeAt(idx);
+      question.dispose();
+
       notifyListeners();
     }
   }
