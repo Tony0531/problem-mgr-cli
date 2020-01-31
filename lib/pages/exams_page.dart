@@ -225,8 +225,33 @@ class ExamsPage extends StatelessWidget {
   }
 
   void _createExam(BuildContext context) {
+    var nameOfExam = TextEditingController();
+
+    showDialog<Null>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('请输入试卷名称：'),
+          children: <Widget>[
+            TextField(
+              controller: nameOfExam,
+            ),
+            FlatButton(
+              child: Text('确定'),
+              onPressed: () {
+                _doCommitExam(context, nameOfExam.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _doCommitExam(BuildContext context, String examName) {
     User user = Provider.of<User>(context, listen: false);
-    user.createExam("测试+++");
+    user.createExam(examName);
   }
 
   void _commitExam(BuildContext context) {
