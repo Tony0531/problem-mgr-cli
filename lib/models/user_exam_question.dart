@@ -10,6 +10,7 @@ enum ExamQuestionResult {
 class UserExamQuestion with ChangeNotifier {
   final Question _question;
   String get key => _question.globalKey;
+  String get subject => _question.exam.subject;
   String get exam => _question.exam.title;
   String get examKey => _question.key;
 

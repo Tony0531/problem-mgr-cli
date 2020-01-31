@@ -18,6 +18,12 @@ void main() {
     ),
   );
 
+  repo.addExam(
+    Exam.fromJson(
+      json.decode('{"subject":"数学", "title":"期末测试", "questions": 5}'),
+    ),
+  );
+  
   runApp(MultiProvider(providers: [
     Provider<AppInfo>.value(value: appInfo),
     ChangeNotifierProvider<User>.value(value: user),

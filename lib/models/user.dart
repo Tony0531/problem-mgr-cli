@@ -60,9 +60,9 @@ class User with ChangeNotifier {
     }
   }
 
-  void createExam(String examName) {
+  void createExam(String subject, String examName) {
     UserExam exam =
-        UserExam(UserExamType.personal, examName, UserExamState.building);
+        UserExam(UserExamType.personal, subject, examName, UserExamState.building);
     _exams.add(exam);
     _currentExam = exam;
     print("exam create $examName");
@@ -79,6 +79,7 @@ class User with ChangeNotifier {
 
       UserExam userExam = UserExam(
         UserExamType.system,
+        exam.subject,
         exam.title,
         UserExamState.processing,
       );

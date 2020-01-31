@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/question_repo.dart';
 import '../models/user.dart';
 import '../models/user_exam.dart';
 import '../models/user_exam_question.dart';
@@ -64,10 +65,12 @@ class ExamsPage extends StatelessWidget {
     return PopupMenuButton<UserExam>(
       itemBuilder: (BuildContext context) {
         return List<PopupMenuEntry<UserExam>>.from(
-            Provider.of<User>(context, listen: false).exams.map((UserExam exam) {
+            Provider.of<User>(context, listen: false)
+                .exams
+                .map((UserExam exam) {
           return PopupMenuItem<UserExam>(
             value: exam,
-            child: Text(exam.title),
+            child: Text("${exam.subject} - ${exam.title}"),
           );
         }));
       },
@@ -77,11 +80,11 @@ class ExamsPage extends StatelessWidget {
       },
       child: Selector(
         selector: (BuildContext context, UserExam exam) {
-          return exam == null ? null : exam.title;
+          return exam == null ? null : "${exam.subject} - ${exam.title}";
         },
-        builder: (BuildContext context, String examName, Widget child) {
+        builder: (BuildContext context, String examFullName, Widget child) {
           print("build exam.selector");
-          return Text(examName);
+          return Text(examFullName);
         },
       ),
     );
@@ -105,13 +108,14 @@ class ExamsPage extends StatelessWidget {
   Widget _buildQuestionsArea(BuildContext context) {
     return Selector(
       selector: (BuildContext context, UserExam exam) => exam.questions,
-      builder:
-          (BuildContext context, List<UserExamQuestion> questions, Widget child) {
+      builder: (BuildContext context, List<UserExamQuestion> questions,
+          Widget child) {
         print("build exam.questionsArea");
 
         return Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: List<Widget>.from(questions.map((UserExamQuestion question) {
+            children:
+                List<Widget>.from(questions.map((UserExamQuestion question) {
               return ChangeNotifierProvider<UserExamQuestion>.value(
                 value: question,
                 child: _buildQuestionWrap(context, question),
@@ -126,7 +130,8 @@ class ExamsPage extends StatelessWidget {
       selector: (BuildContext context, UserExam exam) => exam.state,
       builder: (BuildContext context, UserExamState examState, Widget child) {
         return Consumer<UserExamQuestion>(
-          builder: (BuildContext context, UserExamQuestion question, Widget child) {
+          builder:
+              (BuildContext context, UserExamQuestion question, Widget child) {
             return Card(
               margin: EdgeInsets.all(4.0),
               child: _buildQuestion(context, examState, question),
@@ -137,8 +142,8 @@ class ExamsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestion(
-      BuildContext context, UserExamState examState, UserExamQuestion question) {
+  Widget _buildQuestion(BuildContext context, UserExamState examState,
+      UserExamQuestion question) {
     print("build exam.question ${question.question.key}");
 
     Widget operations;
@@ -227,6 +232,8 @@ class ExamsPage extends StatelessWidget {
   void _createExam(BuildContext context) {
     var nameOfExam = TextEditingController();
 
+    final List<String> subjects = QuestionRepo.instance.subjects;
+
     showDialog<Null>(
       context: context,
       builder: (BuildContext context) {
@@ -239,7 +246,7 @@ class ExamsPage extends StatelessWidget {
             FlatButton(
               child: Text('确定'),
               onPressed: () {
-                _doCommitExam(context, nameOfExam.text);
+                _doCommitExam(context, subjects.first, nameOfExam.text);
                 Navigator.of(context).pop();
               },
             ),
@@ -249,9 +256,9 @@ class ExamsPage extends StatelessWidget {
     );
   }
 
-  void _doCommitExam(BuildContext context, String examName) {
+  void _doCommitExam(BuildContext context, String subject, String examName) {
     User user = Provider.of<User>(context, listen: false);
-    user.createExam(examName);
+    user.createExam(subject, examName);
   }
 
   void _commitExam(BuildContext context) {

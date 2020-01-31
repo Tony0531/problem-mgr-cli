@@ -14,6 +14,7 @@ enum UserExamType {
 
 class UserExam with ChangeNotifier {
   final UserExamType type;
+  final String subject;
   String _title;
   String get title => _title;
 
@@ -23,9 +24,10 @@ class UserExam with ChangeNotifier {
   List<UserExamQuestion> _questions = [];
   List<UserExamQuestion> get questions => _questions;
 
-  static final UserExam noExam = UserExam(UserExamType.personal, "", UserExamState.completed);
+  static final UserExam noExam =
+      UserExam(UserExamType.personal, "", "", UserExamState.completed);
 
-  UserExam(this.type, this._title, this._state);
+  UserExam(this.type, this.subject, this._title, this._state);
 
   UserExamQuestion findQuestion(String key) {
     for (UserExamQuestion q in _questions) {
