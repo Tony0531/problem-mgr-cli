@@ -61,7 +61,7 @@ class UserExam with ChangeNotifier {
 
   void removeQuestion(String key) {
     int idx = _questions.indexWhere((question) => question.key == key);
-    if (idx > 0) {
+    if (idx >= 0) {
       UserExamQuestion question = _questions.removeAt(idx);
       question.dispose();
       print("exam $title: - [$key]");

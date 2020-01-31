@@ -201,26 +201,32 @@ class ExamsPage extends StatelessWidget {
   Widget _buildUserQuestion(BuildContext context, UserQuestion question) {
     print("build user.question ${question.key}");
 
-    Widget operations;
     UserExam exam = Provider.of<UserExam>(context, listen: false);
 
-    if (question.findInExam(exam.title) != null) {
-      operations = IconButton(
-        icon: const Icon(Icons.remove),
-        onPressed: () {
-          exam.removeQuestion(question.key);
-        },
-      );
-    }
-    else {
-      operations = IconButton(
-        icon: const Icon(Icons.add_to_queue),
-        onPressed: () {
-          exam.addQuestion(question, ExamQuestionResult.unknown);
-        },
-      );
-    }
-    
+    Widget operations = Selector<UserQuestion, bool>(
+      selector: (_, question) {
+        return question.findInExam(exam.title) != null;
+      },
+      builder: (context, inExam, _) {
+        if (inExam) {
+          return IconButton(
+            icon: const Icon(Icons.remove),
+            onPressed: () {
+              exam.removeQuestion(question.key);
+            },
+          );
+        } else {
+          return IconButton(
+            icon: const Icon(Icons.add_to_queue),
+            onPressed: () {
+              exam.addQuestion(question, ExamQuestionResult.unknown);
+            },
+          );
+        }
+
+      }
+    );
+
     ListTile title = ListTile(
       leading: Icon(Icons.question_answer),
       title: Text("${question.exam} - ${question.examKey}"),
