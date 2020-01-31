@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'user_exam.dart';
 import 'user_exam_question.dart';
+import 'exam.dart';
+import 'question.dart';
 import 'question_repo.dart';
 
 enum UserLoginState {
@@ -25,7 +27,10 @@ class User with ChangeNotifier {
   void login(String name, String passwd) {
     _loginState = UserLoginState.success;
     _name = name;
-    _loadDebugExams();
+    _currentExam = null;
+    _exams.clear();
+
+    _syncExams();
     _currentExam = _exams.last;
 
     print("login ${this._name}");
@@ -42,6 +47,10 @@ class User with ChangeNotifier {
     notifyListeners();
   }
 
+  UserExam findExam(String title) {
+    return _exams.firstWhere((exam) => exam.title == title);
+  }
+
   void setCurrentExam(UserExam exam) {
     assert(_exams.indexOf(exam) >= 0);
     if (_currentExam != exam) {
@@ -51,29 +60,37 @@ class User with ChangeNotifier {
   }
 
   void createExam(String examName) {
-    UserExam exam = UserExam(examName, UserExamState.building);
+    UserExam exam = UserExam(UserExamType.personal, examName, UserExamState.building);
     _exams.add(exam);
     _currentExam = exam;
     notifyListeners();
   }
 
-  void _loadDebugExams() {
-    _currentExam = null;
-    _exams.clear();
-
+  void _syncExams() {
     final QuestionRepo repo = QuestionRepo.instance;
 
-    for (String examName in ["测试1", "测试2", "测试3"]) {
-      UserExam exam = UserExam(examName, UserExamState.processing);
-      _exams.add(exam);
+    for (Exam exam in repo.exams) {
+      if (findExam(exam.title) != null) {
+        continue;
+      }
 
-      for (String questionKey in ["q1", "q2", "q3"]) {
-        UserExamQuestion question = UserExamQuestion(
-          repo.getOrCreateQuestion(questionKey),
+      UserExam userExam = UserExam(
+        UserExamType.system,
+        exam.title,
+        UserExamState.processing,
+      );
+      _exams.add(userExam);
+
+      for (String questionKey in exam.questions) {
+        Question question = repo.findQuestion(Question.makeGlobalKey(exam.title, questionKey));
+        assert(question != null);
+        
+        UserExamQuestion userQuestion = UserExamQuestion(
+          question,
           ExamQuestionResult.unknown,
         );
 
-        exam.addQuestion(question);
+        userExam.addQuestion(userQuestion);
       }
     }
   }

@@ -162,9 +162,7 @@ class ExamsPage extends StatelessWidget {
 
     ListTile title = ListTile(
       leading: Icon(Icons.question_answer),
-      title: Text(question.question.title == null
-          ? question.question.key
-          : question.question.title),
+      title: Text("${question.exam} - ${question.examKey}"),
       trailing: operations,
     );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'exam.dart';
 
 enum QuestionLoadingState {
   notLoad,
@@ -7,14 +8,19 @@ enum QuestionLoadingState {
 }
 
 class Question with ChangeNotifier {
-  final String _key;
-  String get key => _key;
+  final Exam exam;
+  final String key;
+  String get globalKey => makeGlobalKey(exam.title, key);
 
   QuestionLoadingState _loadingState;
   QuestionLoadingState get loadingState => _loadingState;
 
-  String _title;
-  String get title => _title;
+  String _summary;
+  String get summary => _summary == null ? globalKey : _summary;
 
-  Question(this._key, this._loadingState);
+  Question(this.exam, this.key, this._loadingState);
+
+  static String makeGlobalKey(String examTitle, String key) {
+    return "$examTitle - $key";
+  }
 }
