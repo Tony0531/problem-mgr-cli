@@ -4,6 +4,8 @@ import '../models/question_repo.dart';
 import '../models/user.dart';
 import '../models/user_exam.dart';
 import '../models/user_exam_question.dart';
+import '../models/user_question.dart';
+import '../models/user_question_searcher.dart';
 
 class ExamsPage extends StatelessWidget {
   ExamsPage({Key key}) : super(key: key);
@@ -18,8 +20,8 @@ class ExamsPage extends StatelessWidget {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider<UserExam>.value(value: exam),
-            ChangeNotifierProvider<ExamPageSelectionMode>.value(
-              value: ExamPageSelectionMode(),
+            ChangeNotifierProvider<ExamPageSelectionMode>(
+              create: (_) => ExamPageSelectionMode(),
             ),
           ],
           child: child,
@@ -118,7 +120,10 @@ class ExamsPage extends StatelessWidget {
           return Consumer<ExamPageSelectionMode>(
             builder: (context, selectionMode, child) {
               if (selectionMode.isAddQueston) {
-                return _buildQuestionsAreaAdd(context);
+                return ChangeNotifierProvider<UserQuestionSearcher>(
+                  create: _createSearcher,
+                  child: _buildQuestionsAreaAdd(context),
+                );
               } else {
                 return _buildQuestionsAreaView(context);
               }
@@ -131,15 +136,98 @@ class ExamsPage extends StatelessWidget {
     );
   }
 
+  UserQuestionSearcher _createSearcher(BuildContext context) {
+    UserExam exam = Provider.of<UserExam>(context, listen: false);
+    User user = Provider.of<User>(context, listen: false);
+    var searcher = UserQuestionSearcher(user);
+    searcher.setSubject(exam.subject);
+    searcher.go();
+    return searcher;
+  }
+
   Widget _buildQuestionsAreaAdd(BuildContext context) {
-    return Text("问题选择");
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        _buildQuestionsAreaAddCondition(context),
+        _buildQuestionsAreaAddResult(context),
+      ],
+    );
+  }
+
+  Widget _buildQuestionsAreaAddCondition(BuildContext context) {
+    return Text("条件区域");
+  }
+
+  Widget _buildQuestionsAreaAddResult(BuildContext context) {
+    return Selector<UserQuestionSearcher, int>(
+      selector: (_, searcher) => searcher.resultVersion,
+      builder: (context, int, _) {
+        print("build exam.questionsArea.add.result");
+
+        UserQuestionSearcher searcher = Provider.of<UserQuestionSearcher>(
+          context,
+          listen: false,
+        );
+
+        var childs = <Widget>[];
+
+        for (var question in searcher.results) {
+          childs.add(ChangeNotifierProvider<UserQuestion>.value(
+            value: question,
+            child: _buildUserQuestion(context, question),
+          ));
+        }
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: childs,
+        );
+      },
+    );
+  }
+
+  Widget _buildUserQuestion(BuildContext context, UserQuestion question) {
+    print("build user.question ${question.key}");
+
+    Widget operations;
+
+    // switch (examState) {
+    //   case UserExamState.building:
+    //   operations = IconButton(
+    //     icon: const Icon(Icons.remove),
+    //     onPressed: () => {},
+    //   );
+    //   break;
+    //   case UserExamState.processing:
+    //   operations = IconButton(
+    //     icon: const Icon(Icons.remove),
+    //     onPressed: () => {},
+    //   );
+    //   break;
+    //   case UserExamState.completed:
+    //   break;
+    // }
+
+    ListTile title = ListTile(
+      leading: Icon(Icons.question_answer),
+      title: Text("${question.exam} - ${question.examKey}"),
+      trailing: operations,
+    );
+
+    List<Widget> contents = [];
+    contents.add(title);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: contents,
+    );
   }
 
   Widget _buildQuestionsAreaView(BuildContext context) {
-    return Selector(
-      selector: (BuildContext context, UserExam exam) => exam.questions,
-      builder: (BuildContext context, List<UserExamQuestion> questions,
-          Widget child) {
+    return Selector<UserExam, List<UserExamQuestion>>(
+      selector: (_, exam) => exam.questions,
+      builder: (context, questions, child) {
         print("build exam.questionsArea");
 
         return Column(
@@ -148,14 +236,15 @@ class ExamsPage extends StatelessWidget {
                 List<Widget>.from(questions.map((UserExamQuestion question) {
               return ChangeNotifierProvider<UserExamQuestion>.value(
                 value: question,
-                child: _buildQuestionWrap(context, question),
+                child: _buildExamQuestionWrap(context, question),
               );
             })));
       },
     );
   }
 
-  Widget _buildQuestionWrap(BuildContext context, UserExamQuestion question) {
+  Widget _buildExamQuestionWrap(
+      BuildContext context, UserExamQuestion question) {
     return Selector(
       selector: (BuildContext context, UserExam exam) => exam.state,
       builder: (BuildContext context, UserExamState examState, Widget child) {
@@ -164,7 +253,7 @@ class ExamsPage extends StatelessWidget {
               (BuildContext context, UserExamQuestion question, Widget child) {
             return Card(
               margin: EdgeInsets.all(4.0),
-              child: _buildQuestion(context, examState, question),
+              child: _buildExamQuestion(context, examState, question),
             );
           },
         );
@@ -172,7 +261,7 @@ class ExamsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestion(BuildContext context, UserExamState examState,
+  Widget _buildExamQuestion(BuildContext context, UserExamState examState,
       UserExamQuestion question) {
     print("build exam.question ${question.question.key}");
 

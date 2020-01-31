@@ -9,18 +9,19 @@ class QuestionRepo {
   List<Exam> get exams => List.from(_exams.values);
 
   Map<String, Question> _questions = {};
+  List<Question> get questions => List.from(_questions.values);
 
   factory QuestionRepo() => _getInstance();
   static QuestionRepo get instance => _getInstance();
   static QuestionRepo _instance;
 
-  QuestionRepo._internal() {
+  QuestionRepo._() {
     // 初始化
   }
 
   static QuestionRepo _getInstance() {
     if (_instance == null) {
-      _instance = new QuestionRepo._internal();
+      _instance = new QuestionRepo._();
     }
     return _instance;
   }
