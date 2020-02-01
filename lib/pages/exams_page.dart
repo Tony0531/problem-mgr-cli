@@ -296,12 +296,22 @@ class ExamsPage extends StatelessWidget {
   }
 
   Widget _buildExamQuestionResult(
-    BuildContext context, UserExamQuestion question) {
-    return Radio(
-            value: ExamQuestionResult.correct,
-            groupValue: question.result,
-            onChanged: (ExamQuestionResult value) => question.setResult(value),
-        );
+      BuildContext context, UserExamQuestion question) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Radio(
+          value: ExamQuestionResult.correct,
+          groupValue: question.result,
+          onChanged: (ExamQuestionResult value) => question.setResult(value),
+        ),
+        Radio(
+          value: ExamQuestionResult.error,
+          groupValue: question.result,
+          onChanged: (ExamQuestionResult value) => question.setResult(value),
+        ),
+      ],
+    );
     // return Row(
     //   mainAxisAlignment: MainAxisAlignment.end,
     //   children: <Widget>[
