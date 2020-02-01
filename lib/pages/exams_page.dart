@@ -280,9 +280,10 @@ class ExamsPage extends StatelessWidget {
         );
         break;
       case UserExamState.processing:
-        operations = _buildExamQuestionResult(context, question);
+        operations = _buildExamQuestionResultSelector(context, question);
         break;
       case UserExamState.completed:
+        operations = _buildExamQuestionResult(context, question);
         break;
     }
 
@@ -301,7 +302,18 @@ class ExamsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildExamQuestionResult(
+  Widget _buildExamQuestionResult(BuildContext context, UserExamQuestion question) {
+    switch (question.result) {
+      case ExamQuestionResult.unknown:
+        return null;
+      case ExamQuestionResult.error:
+        return Text("错");
+      case ExamQuestionResult.correct:
+        return Text("对");
+    }
+  }
+
+  Widget _buildExamQuestionResultSelector(
       BuildContext context, UserExamQuestion question) {
     return Row(
       mainAxisSize: MainAxisSize.min,
