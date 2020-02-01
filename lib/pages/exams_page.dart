@@ -300,31 +300,37 @@ class ExamsPage extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Radio(
-          value: ExamQuestionResult.correct,
-          groupValue: question.result,
-          onChanged: (ExamQuestionResult value) => question.setResult(value),
+        _buildRadioLabel(
+          Text("对"),
+          question.result,
+          ExamQuestionResult.correct,
+          (value) => question.setResult(value),
         ),
-        Radio(
-          value: ExamQuestionResult.error,
-          groupValue: question.result,
-          onChanged: (ExamQuestionResult value) => question.setResult(value),
+        _buildRadioLabel(
+          Text("错"),
+          question.result,
+          ExamQuestionResult.error,
+          (value) => question.setResult(value),
         ),
       ],
     );
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.end,
-    //   children: <Widget>[
-    //     ListTile(
-    //       title: const Text('对'),
-    //       leading: Radio(
-    //         value: ExamQuestionResult.correct,
-    //         groupValue: question.result,
-    //         onChanged: (ExamQuestionResult value) => question.setResult(value),
-    //       ),
-    //     ),
-    //   ],
-    // );
+  }
+
+  Widget _buildRadioLabel(
+      Widget label, var value, var group, ValueChanged onChanged) {
+    return GestureDetector(
+      onTap: () => onChanged(group),
+        child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        label,
+        Radio(
+          value: group,
+          groupValue: value,
+          onChanged: onChanged,
+        ),
+      ],
+    ));
   }
 
   Widget _buildBottomBar(BuildContext context) {
