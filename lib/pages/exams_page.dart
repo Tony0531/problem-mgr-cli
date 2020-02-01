@@ -302,14 +302,14 @@ class ExamsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildExamQuestionResult(BuildContext context, UserExamQuestion question) {
-    switch (question.result) {
-      case ExamQuestionResult.unknown:
-        return null;
-      case ExamQuestionResult.error:
-        return Text("错");
-      case ExamQuestionResult.correct:
-        return Text("对");
+  Widget _buildExamQuestionResult(
+      BuildContext context, UserExamQuestion question) {
+    if (question.result == ExamQuestionResult.error) {
+      return Text("错");
+    } else if (question.result == ExamQuestionResult.correct) {
+      return Text("对");
+    } else {
+      return null;
     }
   }
 
