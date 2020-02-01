@@ -149,7 +149,7 @@ class ExamsPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _buildQuestionsAreaAddCondition(context),
-        _buildQuestionsAreaAddResult(context),
+        Expanded(child: _buildQuestionsAreaAddResult(context)),
       ],
     );
   }
@@ -169,31 +169,14 @@ class ExamsPage extends StatelessWidget {
           listen: false,
         );
 
-        var childs = <Widget>[];
 
-        for (var question in searcher.results) {
-          childs.add(ChangeNotifierProvider<UserQuestion>.value(
+        return ListView.builder(itemBuilder: (context, i) {
+          var question = searcher.results[i];
+          return ChangeNotifierProvider<UserQuestion>.value(
             value: question,
             child: _buildUserQuestion(context, question),
-          ));
-        }
-
-        return CustomScrollView(
-          shrinkWrap: true,
-          // 内容
-          slivers: <Widget>[
-            SliverPadding(
-              padding: const EdgeInsets.all(20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(childs),
-              ),
-            ),
-          ],
-        );
-        // return CustomScrollView(
-        //   shrinkWrap: true,
-        //   slivers: childs,
-        // );
+          );
+        }, itemCount: searcher.results.length,);
       },
     );
   }
