@@ -11,6 +11,7 @@ class Question with ChangeNotifier {
   final Exam exam;
   final String key;
   String get globalKey => makeGlobalKey(exam.title, key);
+  String get subject => exam.subject;
 
   QuestionLoadingState _loadingState;
   QuestionLoadingState get loadingState => _loadingState;

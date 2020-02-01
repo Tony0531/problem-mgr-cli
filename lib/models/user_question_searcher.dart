@@ -63,6 +63,10 @@ class UserQuestionSearcher with ChangeNotifier {
     final QuestionRepo repo = QuestionRepo.instance;
 
     for (Question q in repo.questions) {
+      if (_subject != null && q.subject != _subject) {
+        continue;
+      }
+
       _results.add(user.checkCreateQuestion(q));
     }
   }
