@@ -169,13 +169,16 @@ class ExamsPage extends StatelessWidget {
           listen: false,
         );
 
-        return ListView.builder(itemBuilder: (context, i) {
-          var question = searcher.results[i];
-          return ChangeNotifierProvider<UserQuestion>.value(
-            value: question,
-            child: _buildUserQuestion(context, question),
-          );
-        }, itemCount: searcher.results.length,);
+        return ListView.builder(
+          itemBuilder: (context, i) {
+            var question = searcher.results[i];
+            return ChangeNotifierProvider<UserQuestion>.value(
+              value: question,
+              child: _buildUserQuestion(context, question),
+            );
+          },
+          itemCount: searcher.results.length,
+        );
       },
     );
   }
@@ -228,13 +231,16 @@ class ExamsPage extends StatelessWidget {
 
         print("build exam.questionsArea.view");
 
-        return ListView.builder(itemBuilder: (context, i) {
-          var question = exam.questions[i];
-          return ChangeNotifierProvider<UserExamQuestion>.value(
-            value: question,
-            child: _buildExamQuestionWrap(context, question),
-          );
-        }, itemCount: exam.questions.length,);
+        return ListView.builder(
+          itemBuilder: (context, i) {
+            var question = exam.questions[i];
+            return ChangeNotifierProvider<UserExamQuestion>.value(
+              value: question,
+              child: _buildExamQuestionWrap(context, question),
+            );
+          },
+          itemCount: exam.questions.length,
+        );
       },
     );
   }
@@ -320,17 +326,18 @@ class ExamsPage extends StatelessWidget {
       Widget label, var value, var group, ValueChanged onChanged) {
     return GestureDetector(
       onTap: () => onChanged(group),
-        child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        label,
-        Radio(
-          value: group,
-          groupValue: value,
-          onChanged: onChanged,
-        ),
-      ],
-    ));
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Radio(
+            value: group,
+            groupValue: value,
+            onChanged: onChanged,
+          ),
+          label,
+        ],
+      ),
+    );
   }
 
   Widget _buildBottomBar(BuildContext context) {
