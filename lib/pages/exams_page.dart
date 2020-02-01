@@ -169,7 +169,6 @@ class ExamsPage extends StatelessWidget {
           listen: false,
         );
 
-
         return ListView.builder(itemBuilder: (context, i) {
           var question = searcher.results[i];
           return ChangeNotifierProvider<UserQuestion>.value(
@@ -227,23 +226,15 @@ class ExamsPage extends StatelessWidget {
       builder: (context, _, child) {
         UserExam exam = Provider.of<UserExam>(context, listen: false);
 
-        print("build exam.questionsArea");
+        print("build exam.questionsArea.view");
 
-        var childs = <Widget>[];
-
-        for (var question in exam.questions) {
-          childs.add(
-            ChangeNotifierProvider<UserExamQuestion>.value(
-              value: question,
-              child: _buildExamQuestionWrap(context, question),
-            ),
+        return ListView.builder(itemBuilder: (context, i) {
+          var question = exam.questions[i];
+          return ChangeNotifierProvider<UserExamQuestion>.value(
+            value: question,
+            child: _buildExamQuestionWrap(context, question),
           );
-        }
-
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: childs,
-        );
+        }, itemCount: exam.questions.length,);
       },
     );
   }
