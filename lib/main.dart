@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'models/app_info.dart';
@@ -8,7 +9,13 @@ import 'models/question_repo.dart';
 import 'app.dart';
 
 void main() {
-  final User user = User();
+  final Dio dio = new Dio();
+  //response = await dio.get("/test?id=12&name=wendu");
+  dio.options.baseUrl = "http://127.0.0.1:3000";
+  dio.options.connectTimeout = 5000; //5s
+  dio.options.receiveTimeout = 3000;
+
+  final User user = User(dio);
   final AppInfo appInfo = AppInfo();
 
   final QuestionRepo repo = QuestionRepo.instance;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'user_exam.dart';
 import 'user_question.dart';
 import 'user_exam_question.dart';
@@ -16,6 +17,8 @@ class User with ChangeNotifier {
   UserLoginState _loginState = UserLoginState.notLogin;
   UserLoginState get loginState => _loginState;
 
+  final Dio _dio;
+
   String _name;
   String get name => _name;
 
@@ -27,7 +30,22 @@ class User with ChangeNotifier {
   UserExam _currentExam;
   UserExam get currentExam => _currentExam;
 
-  void login(String name, String passwd) {
+  User(this._dio);
+
+  void login(String name, String passwd) async {
+    print("login begin: name=$name, passwd=$passwd");
+
+    Response response = await this._dio.post("/login", data: {
+        "name": name,
+        "passwd": passwd,
+    });
+    print("login done");
+    print(response);
+
+    this._onLoginSuccess(name);
+  }
+
+  void _onLoginSuccess(String name) {
     _loginState = UserLoginState.success;
     _name = name;
     _currentExam = null;
@@ -39,7 +57,7 @@ class User with ChangeNotifier {
     print("login ${this._name}");
     this.notifyListeners();
   }
-
+  
   void logout() {
     print("logout ${this._name}");
     _loginState = UserLoginState.notLogin;
