@@ -435,29 +435,74 @@ class ExamsPage extends StatelessWidget {
   }
 
   void _createExam(BuildContext context) {
-    var nameOfExam = TextEditingController();
-
-    final List<String> subjects = QuestionRepo.instance.subjects;
-
     showDialog<Null>(
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('请输入试卷名称：'),
-          children: <Widget>[
-            TextField(
-              controller: nameOfExam,
-            ),
-            FlatButton(
-              child: Text('确定'),
-              onPressed: () {
-                _doCommitExam(context, subjects.first, nameOfExam.text);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return _buildCreateExamDialog(context);
       },
+    );
+  }
+
+  Widget _buildCreateExamDialog(BuildContext context) {
+    var nameOfExam = TextEditingController();
+    var selectedSubject =
+        ExamPageSubjectSelectionMode(QuestionRepo.instance.subjects.first);
+
+    return ChangeNotifierProvider.value(
+      value: selectedSubject,
+      child: SimpleDialog(
+        title: Text('新建试卷'),
+        children: <Widget>[
+          Text("选择科目："),
+          _buildCreateExamSubjectSelector(context),
+          Text("请输入试卷名称："),
+          TextField(
+            controller: nameOfExam,
+          ),
+          FlatButton(
+            child: Text('确定'),
+            onPressed: () {
+              _doCommitExam(context, selectedSubject.subject, nameOfExam.text);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCreateExamSubjectSelector(BuildContext context) {
+    final List<String> subjects = QuestionRepo.instance.subjects;
+
+    var subjectWidgets = <Widget>[];
+    for (var subject in subjects) {
+      subjectWidgets.add(
+        GestureDetector(
+          //onTap: () => onChanged(group),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Consumer(
+                builder: (context, ExamPageSubjectSelectionMode selection, child) {
+                  return Radio(
+                    value: subject,
+                    groupValue: selection.subject,
+                    onChanged: (value) {
+                      selection.setSubject(value);
+                      print("xxxxxx subject=$value");
+                    },
+                  );
+                },
+              ),
+              Text(subject),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      children: subjectWidgets,
     );
   }
 
@@ -488,6 +533,22 @@ class ExamPageSelectionMode with ChangeNotifier {
   void setAddQuestion(bool isAddQueston) {
     if (_isAddQuestion != isAddQueston) {
       _isAddQuestion = isAddQueston;
+      notifyListeners();
+    }
+  }
+}
+
+class ExamPageSubjectSelectionMode with ChangeNotifier {
+  String _subject;
+  String get subject => _subject;
+
+  ExamPageSubjectSelectionMode(this._subject);
+
+  //bool get isAddQueston => _isAddQuestion;
+
+  void setSubject(String subject) {
+    if (_subject != subject) {
+      _subject = subject;
       notifyListeners();
     }
   }
