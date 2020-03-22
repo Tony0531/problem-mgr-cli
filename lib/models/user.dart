@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'server_error.dart';
 import 'user_exam.dart';
 import 'user_question.dart';
 import 'user_exam_question.dart';
@@ -32,17 +33,23 @@ class User with ChangeNotifier {
 
   User(this._dio);
 
-  void login(String name, String passwd) async {
+  Future login(String name, String passwd) async {
     print("login begin: name=$name, passwd=$passwd");
 
-    Response response = await this._dio.post("/login", data: {
+    try {
+      Response response = await this._dio.post("/signin", data: {
         "name": name,
         "passwd": passwd,
-    });
-    print("login done");
-    print(response);
+      });
+      print("login done");
+      print(response);
 
-    this._onLoginSuccess(name);
+      this._onLoginSuccess(name);
+      return null;
+    } catch (e) {
+      var se = ServerError.fromException(e);
+      throw se != null ? se : e;
+    }
   }
 
   void _onLoginSuccess(String name) {
@@ -57,7 +64,7 @@ class User with ChangeNotifier {
     print("login ${this._name}");
     this.notifyListeners();
   }
-  
+
   void logout() {
     print("logout ${this._name}");
     _loginState = UserLoginState.notLogin;
@@ -130,7 +137,8 @@ class User with ChangeNotifier {
             repo.findQuestion(Question.makeGlobalKey(exam.title, questionKey));
         assert(question != null);
 
-        userExam.addQuestion(checkCreateQuestion(question), ExamQuestionResult.unknown);
+        userExam.addQuestion(
+            checkCreateQuestion(question), ExamQuestionResult.unknown);
       }
     }
   }

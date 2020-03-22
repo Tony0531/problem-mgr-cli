@@ -10,9 +10,9 @@ import 'app.dart';
 
 void main() {
   final Dio dio = new Dio();
-  //response = await dio.get("/test?id=12&name=wendu");
   dio.options.baseUrl = "http://127.0.0.1:3000";
   dio.options.connectTimeout = 5000; //5s
+  dio.options.responseType = ResponseType.json;
   dio.options.receiveTimeout = 3000;
 
   final User user = User(dio);
@@ -30,7 +30,7 @@ void main() {
       json.decode('{"subject":"数学", "title":"期末测试", "questions": 5}'),
     ),
   );
-  
+
   runApp(MultiProvider(providers: [
     Provider<AppInfo>.value(value: appInfo),
     ChangeNotifierProvider<User>.value(value: user),

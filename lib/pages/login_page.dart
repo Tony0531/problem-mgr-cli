@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart';
+import '../models/server_error.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatelessWidget {
@@ -180,7 +181,21 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(BuildContext context) {
-    Provider.of<User>(context).login(_userTF.text, _pwdTF.text);
+  _login(BuildContext context) async {
+    try {
+      await Provider.of<User>(context).login(_userTF.text, _pwdTF.text);
+    } on ServerError catch (e) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return new SimpleDialog(
+              title: new Text('错误信息'),
+              children: <Widget>[
+                new Text(e.code.toString()),
+                new Text(e.message),
+              ],
+            );
+          });
+    }
   }
 }
