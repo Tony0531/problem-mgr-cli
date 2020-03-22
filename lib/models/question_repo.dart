@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'exam.dart';
 import 'question.dart';
 
@@ -24,6 +25,18 @@ class QuestionRepo {
       _instance = new QuestionRepo._();
     }
     return _instance;
+  }
+
+  void load(Dio dio) async {
+    try {
+      Response response = await dio.get("/exams");
+      print("query exams success");
+      for (var exam in response.data) {
+        addExam(Exam.fromJson(exam));
+      }
+    } catch (e) {
+      print("query exams exception: $e");
+    }
   }
 
   Question findQuestion(String key) {

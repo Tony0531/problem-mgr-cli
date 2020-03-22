@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-enum ServerErrorCode { userNotExists }
+enum ServerErrorCode { userNotExists, userAuthFailed }
 
 class ServerError extends Error {
   final ServerErrorCode code;
@@ -27,6 +27,9 @@ class ServerError extends Error {
     print(msg);
     if (msg == "UserNotExists") {
       return ServerErrorCode.userNotExists;
+    }
+    else if (msg == "UserAuthFailed") {
+      return ServerErrorCode.userAuthFailed;
     }
 
     return null;

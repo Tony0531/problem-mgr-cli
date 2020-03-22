@@ -33,18 +33,19 @@ class User with ChangeNotifier {
 
   User(this._dio);
 
-  Future login(String name, String passwd) async {
-    print("login begin: name=$name, passwd=$passwd");
+  Future login(String studentId, String passwd) async {
+    print("login begin: studentId=$studentId, passwd=$passwd");
 
     try {
       Response response = await this._dio.post("/signin", data: {
-        "name": name,
+        "studentId": studentId,
         "passwd": passwd,
       });
+
       print("login done");
       print(response);
 
-      this._onLoginSuccess(name);
+      this._onLoginSuccess(response.data["name"]);
       return null;
     } catch (e) {
       var se = ServerError.fromException(e);
